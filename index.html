@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRESERVA | Fresh Produce, Less Waste</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <a href="#home" class="logo" data-page="home">
+      <img src="Preserva Logo.png" alt="PRESERVA">
+    </a>
+    <nav aria-label="Main">
+      <a href="#home" data-page="home">Home</a>
+      <a href="#products" data-page="products">Rescue Deals</a>
+      <a href="#seller" data-page="seller">Become a Seller</a>
+      <a href="#about" data-page="about">About</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- HOME -->
+    <section id="home" class="page active">
+      <div class="hero">
+        <div class="hero-content">
+          <span class="tag">Support local, reduce food waste</span>
+          <h1 tabindex="-1">Good produce shouldn't go to waste.</h1>
+          <p>
+            Sellers in Panabo City mark down ripe fruits and vegetables
+            that need to sell today. Find a deal, call the seller, and
+            pick it up at the market.
+          </p>
+          <button class="btn" data-page="products">See today's deals</button>
+          <button class="btn btn-light" data-page="seller">Become a seller</button>
+        </div>
+        <div class="hero-image">
+          <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1000&q=85"
+               alt="Fresh vegetables">
+        </div>
+      </div>
+
+      <div class="impact">
+        <div><strong id="impactKg">0</strong><span>kg of produce up for rescue today</span></div>
+        <div><strong id="impactDeals">0</strong><span>deals from local sellers</span></div>
+        <div><strong id="impactSave">₱0</strong><span>saved by buyers if all sell</span></div>
+      </div>
+
+      <div class="section">
+        <h2>How PRESERVA works</h2>
+        <p class="subtitle">Three steps from stall to kitchen.</p>
+        <div class="features">
+          <article class="feature">
+            <div class="feature-icon">🥬</div>
+            <h3>Sellers post</h3>
+            <p>Vendors list produce that needs to sell soon, at a lower price.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">🔎</div>
+            <h3>Buyers browse</h3>
+            <p>Compare prices, see how much is left, and check pickup times.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">🤝</div>
+            <h3>Visit and buy</h3>
+            <p>Call the seller, get directions, and pay at the market.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h2>Help good produce find a buyer.</h2>
+        <p>Every kilo sold is a kilo that doesn't get thrown away.</p>
+        <button class="btn" data-page="about">Learn about us</button>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="page">
+      <div class="page-heading">
+        <h1 tabindex="-1">Rescue deals</h1>
+        <p>Sample listings for our Panabo market demo.</p>
+      </div>
+
+      <div class="toolbar">
+        <input id="searchInput" type="search"
+               placeholder="Search produce or sellers" aria-label="Search products">
+        <label class="sort">Sort by
+          <select id="sortSelect">
+            <option value="default">Featured</option>
+            <option value="discount">Biggest discount</option>
+            <option value="price">Lowest price</option>
+            <option value="ending">Ending soonest</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="filters">
+        <button class="filter active" data-category="All">All</button>
+        <button class="filter" data-category="Vegetables">Vegetables</button>
+        <button class="filter" data-category="Fruits">Fruits</button>
+      </div>
+
+      <p id="productCount" class="subtitle" role="status"></p>
+      <div id="productGrid" class="product-grid"></div>
+    </section>
+
+    <!-- SELLER -->
+    <section id="seller" class="page">
+      <div class="page-heading">
+        <h1 tabindex="-1">Become a seller</h1>
+        <p>Tell nearby buyers what you have and when it needs to sell.</p>
+      </div>
+
+      <div class="seller-layout">
+        <aside class="seller-side">
+          <h2>Why sell on PRESERVA</h2>
+          <ul class="benefits">
+            <li>Sell produce before it spoils</li>
+            <li>Reach buyers near your market</li>
+            <li>Buyers call or text you directly</li>
+            <li>Works on any phone, no app to install</li>
+          </ul>
+
+          <p class="preview-label">How buyers will see your deal</p>
+          <article class="product-card preview" aria-label="Preview of your deal">
+            <span class="badge" id="pvBadge">Sell today</span>
+            <div class="preview-img" id="pvImg">🥬</div>
+            <div class="product-info">
+              <h3 id="pvName">Your produce</h3>
+              <div class="price-row">
+                <span class="price" id="pvPrice">Set your price</span>
+                <s class="old-price" id="pvOld"></s>
+              </div>
+              <ul class="meta">
+                <li id="pvQty">Quantity left</li>
+                <li id="pvUntil">Pickup until 5 PM today</li>
+                <li id="pvStall">Your stall · Your market</li>
+              </ul>
+            </div>
+          </article>
+        </aside>
+
+        <div>
+          <form id="sellerForm" class="seller-form" novalidate>
+            <fieldset>
+              <legend>About you</legend>
+              <label for="sellerName">Full name</label>
+              <input id="sellerName" name="sellerName" autocomplete="name" placeholder="Your name">
+              <label for="sellerPhone">Mobile number</label>
+              <input id="sellerPhone" name="sellerPhone" type="tel" inputmode="tel"
+                     autocomplete="tel" placeholder="09XX XXX XXXX">
+              <p class="hint">Buyers will see this number so they can call or text you.</p>
+            </fieldset>
+
+            <fieldset>
+              <legend>Your stall</legend>
+              <label for="businessName">Business or stall name</label>
+              <input id="businessName" name="businessName" placeholder="Your stall name">
+              <label for="sellerLocation">Market location</label>
+              <input id="sellerLocation" name="sellerLocation" placeholder="Example: Panabo Central Market">
+            </fieldset>
+
+            <fieldset>
+              <legend>What are you selling?</legend>
+              <div class="chips">
+                <label class="chip"><input type="checkbox" name="produce" value="Pechay" data-emoji="🥬"><span>🥬 Pechay</span></label>
+                <label class="chip"><input type="checkbox" name="produce" value="Sayote" data-emoji="🥒"><span>🥒 Sayote</span></label>
+                <label class="chip"><input type="checkbox" name="produce" value="Tomatoes" data-emoji="🍅"><span>🍅 Tomatoes</span></label>
+                <label class="chip"><input type="checkbox" name="produce" value="Carrots" data-emoji="🥕"><span>🥕 Carrots</span></label>
+                <label class="chip"><input type="checkbox" name="produce" value="Eggplant" data-emoji="🍆"><span>🍆 Eggplant</span></label>
+                <label class="chip"><input type="checkbox" name="produce" value="Squash" data-emoji="🎃"><span>🎃 Squash</span></label>
+                <label class="chip"><input type="checkbox" name="produce" value="Bananas" data-emoji="🍌"><span>🍌 Bananas</span></label>
+                <label class="chip"><input type="checkbox" name="produce" value="Mangoes" data-emoji="🥭"><span>🥭 Mangoes</span></label>
+              </div>
+              <label for="otherProduce">Something else?</label>
+              <input id="otherProduce" name="otherProduce" placeholder="Example: Okra, calamansi">
+            </fieldset>
+
+            <fieldset>
+              <legend>Your first deal (optional)</legend>
+              <div class="field-row">
+                <div>
+                  <label for="price">Rescue price (₱)</label>
+                  <input id="price" name="price" type="number" min="0" inputmode="decimal" placeholder="35">
+                </div>
+                <div>
+                  <label for="oldPrice">Usual price (₱)</label>
+                  <input id="oldPrice" name="oldPrice" type="number" min="0" inputmode="decimal" placeholder="50">
+                </div>
+              </div>
+              <div class="field-row">
+                <div>
+                  <label for="unit">Sold per</label>
+                  <select id="unit" name="unit">
+                    <option value="kg">kg</option>
+                    <option value="bunch">bunch</option>
+                    <option value="piece">piece</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="qty">How many left</label>
+                  <input id="qty" name="qty" type="number" min="1" inputmode="numeric" placeholder="10">
+                </div>
+              </div>
+              <label for="until">Buyers can pick up until</label>
+              <select id="until" name="until">
+                <option value="14">2 PM</option>
+                <option value="15">3 PM</option>
+                <option value="16">4 PM</option>
+                <option value="17" selected>5 PM</option>
+                <option value="18">6 PM</option>
+                <option value="19">7 PM</option>
+                <option value="20">8 PM</option>
+              </select>
+            </fieldset>
+
+            <button type="submit" class="btn">Send registration</button>
+            <p id="formMessage" role="status"></p>
+          </form>
+
+          <div id="sellerSuccess" class="seller-form success" hidden>
+            <div class="success-icon">✓</div>
+            <h2>Thanks, <span id="successName"></span>!</h2>
+            <p>We received your registration. Buyers will be able to find your deals once you're listed.</p>
+            <p class="hint" id="successNote"></p>
+            <button class="btn" data-page="products">See today's deals</button>
+            <button class="btn btn-outline" id="addAnother" type="button">Add another seller</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="page">
+      <div class="page-heading">
+        <h1 tabindex="-1">About PRESERVA</h1>
+        <p>Connecting local produce sellers with people who want affordable food.</p>
+      </div>
+
+      <div class="about-wrap">
+        <div class="about-intro">
+          <div>
+            <h2>Good food deserves a buyer.</h2>
+            <p>
+              Every day, fresh fruits and vegetables go unsold in local markets.
+              PRESERVA helps sellers in Panabo City find buyers for that produce
+              before it spoils, at a price that works for everyone.
+            </p>
+            <button class="btn" data-page="products">See today's deals</button>
+          </div>
+          <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=900&q=80"
+               alt="A market stall with fresh vegetables">
+        </div>
+
+        <div class="about-duo">
+          <article class="about-box problem">
+            <div class="about-icon">🥀</div>
+            <h3>The problem</h3>
+            <p>Farmers and produce sellers often can't sell their remaining fruits and vegetables before they spoil. That means wasted food and lost income.</p>
+          </article>
+          <article class="about-box solution">
+            <div class="about-icon">🌱</div>
+            <h3>Our solution</h3>
+            <p>PRESERVA lets sellers list produce at a rescue price, so buyers can find it and visit the stall before it goes bad.</p>
+          </article>
+        </div>
+
+        <blockquote class="about-mission">
+          <h3>Our mission</h3>
+          <p>Support local sellers, make produce easier to find, and encourage responsible use of food.</p>
+        </blockquote>
+
+        <div class="about-duo">
+          <article class="about-box">
+            <div class="about-icon">📍</div>
+            <h3>Where we are</h3>
+            <p>Panabo City, Davao del Norte, Philippines</p>
+            <a class="btn btn-outline" target="_blank" rel="noopener noreferrer"
+               href="https://www.google.com/maps/search/?api=1&query=Panabo+City+Davao+del+Norte">Open in Maps</a>
+          </article>
+          <article class="about-box">
+            <div class="about-icon">🌍</div>
+            <h3>Our goal</h3>
+            <p>Contribute to UN Sustainable Development Goal 12: Responsible Consumption and Production.</p>
+          </article>
+        </div>
+
+        <div class="about-cta">
+          <h2>Ready to help?</h2>
+          <p>Find a deal today, or list your own produce.</p>
+          <button class="btn btn-light" data-page="products">See today's deals</button>
+          <button class="btn btn-light" data-page="seller">Become a seller</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>PRESERVA</h3>
+    <p>Supporting local sellers. Reducing food waste.</p>
+    <p>Panabo City, Davao del Norte</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
