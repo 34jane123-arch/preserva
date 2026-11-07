@@ -20,16 +20,20 @@
     USERS_KEY: "preserva_users",
     SESSION_KEY: "preserva_session",
     FLASH_KEY: "preserva_flash",
+    ACTIVITY_KEY: "preserva_activity",
+    LOCK_KEY: "preserva_admin_lock",
+    ADMIN_SESSION_MS: 2 * 60 * 60 * 1000, // admin sessions expire after 2 hours
+    MAX_FAILS: 5, LOCK_MS: 5 * 60 * 1000, // 5 wrong admin logins = 5 minute lock
     // DEMO ONLY: the one admin account. Admins cannot register publicly.
     // Change the password, and delete this once admins live in your database.
     ADMIN_SEED: { fullName: "PRESERVA Admin", email: "admin@preserva.demo", username: "admin", password: "Admin12345" }
   };
 
   const ROLES = {
-    local:    { label: "Local Buyer",    dashboard: "dashboard-local.html" },
-    business: { label: "Business Buyer", dashboard: "dashboard-business.html" },
-    seller:   { label: "Seller",         dashboard: "dashboard-seller.html" },
-    admin:    { label: "Admin",          dashboard: "dashboard-admin.html" }
+    local:    { label: "Local Buyer",    dashboard: "local-buyer.html" },
+    business: { label: "Business Buyer", dashboard: "business-buyer.html" },
+    seller:   { label: "Seller",         dashboard: "seller.html" },
+    admin:    { label: "Admin",          dashboard: "admin.html" }
   };
   const PUBLIC_ROLES = ["local", "business", "seller"]; // admin is never self-registered
 
@@ -100,7 +104,9 @@
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const USERNAME_RE = /^[a-zA-Z0-9_.]{3,20}$/;
   const bad = (field, error) => ({ ok: false, field, error });
-  const publicUser = u => ({ id: u.id, fullName: u.fullName, email: u.email, username: u.username, role: u.role, createdAt: u.createdAt });
+  const publicUser = u => ({ id: u.id, fullName: u.fullName, email: u.email, username: u.username, role: u.role, createdAt: u.createdAt, status: u.status || "active", perms: u.perms || { sell: true, message: true },
+    vendorStatus: u.role === "seller" ? (u.vendorStatus || "approved") : undefined, // old seller accounts count as approved
+    vendorNote: u.vendorNote || "", mustChangePassword: !!u.mustChangePassword });
 
   // Creates the demo admin the first time the site runs.
   const ready = (async () => {
@@ -109,7 +115,7 @@
     const salt = randomHex();
     usersRepo.save([...usersRepo.all(), {
       id: "u_admin", fullName: a.fullName, email: norm(a.email), username: a.username, role: "admin",
-      salt, passHash: await hashPassword(a.password, salt), createdAt: new Date().toISOString()
+      salt, passHash: await hashPassword(a.password, salt), createdAt: new Date().toISOString(), mustChangePassword: true
     }]);
   })().catch(err => console.error("PRESERVA: could not create demo admin", err));
 
@@ -141,7 +147,8 @@
     const user = {
       id: "u_" + Date.now().toString(36) + randomHex(4),
       fullName: d.fullName, email: d.email, username: d.username, role: d.role,
-      salt, passHash: await hashPassword(d.password, salt), createdAt: new Date().toISOString()
+      salt, passHash: await hashPassword(d.password, salt), createdAt: new Date().toISOString(),
+      vendorStatus: d.role === "seller" ? "pending" : undefined // new sellers wait for admin approval
     };
     usersRepo.save([...usersRepo.all(), user]);
     return { ok: true, user: publicUser(user) };
@@ -156,18 +163,56 @@
     if (!user || !(await verifyPassword(password, user))) {
       return { ok: false, error: "Incorrect username, email, or password." };
     }
+    if (user.role === "admin") return { ok: false, error: "Administrator accounts sign in through the Admin Login tab." };
+    if (user.status && user.status !== "active") return { ok: false, error: "This account is " + user.status + ". Please contact an administrator." };
     storage.write(CONFIG.SESSION_KEY, { userId: user.id, at: Date.now() });
     return { ok: true, user: publicUser(user) };
   }
 
-  function logout() { storage.remove(CONFIG.SESSION_KEY); }
+  /* ---------- admin login: a separate path that only accepts accounts whose role is admin ---------- */
+  function pushLog(a, action, detail) {
+    const l = storage.read(CONFIG.ACTIVITY_KEY, []);
+    l.push({ id: "a_" + Date.now().toString(36) + randomHex(2), at: new Date().toISOString(), adminId: a.id || "", adminName: a.fullName || "Unknown", adminEmail: a.email || "", action, detail: detail || "" });
+    storage.write(CONFIG.ACTIVITY_KEY, l.slice(-1000));
+  }
+
+  async function loginAdmin(input) {
+    await ready;
+    const email = norm(input.email), password = String(input.password || "");
+    if (!email || !password) return { ok: false, error: "Enter your admin email and password." };
+    let lock = storage.read(CONFIG.LOCK_KEY, { count: 0, until: 0 });
+    if (lock.until > Date.now()) return { ok: false, error: "Too many failed attempts. Try again in " + Math.ceil((lock.until - Date.now()) / 60000) + " minute(s)." };
+    if (lock.until) lock = { count: 0, until: 0 };
+    const user = usersRepo.all().find(u => u.role === "admin" && norm(u.email) === email);
+    const good = user ? await verifyPassword(password, user) : (await hashPassword(password, "x"), false);
+    if (!good || (user.status && user.status !== "active")) { // same message for every failure, so nothing leaks
+      lock.count = (lock.count || 0) + 1;
+      if (lock.count >= CONFIG.MAX_FAILS) lock = { count: 0, until: Date.now() + CONFIG.LOCK_MS };
+      storage.write(CONFIG.LOCK_KEY, lock);
+      if (user) pushLog(user, "Failed admin login", lock.until ? "Login locked for 5 minutes" : "");
+      return { ok: false, error: "Incorrect admin email or password." };
+    }
+    storage.remove(CONFIG.LOCK_KEY);
+    storage.write(CONFIG.SESSION_KEY, { userId: user.id, at: Date.now(), admin: true });
+    pushLog(user, "Admin login", "");
+    return { ok: true, user: publicUser(user) };
+  }
+
+  function logout() {
+    const u = currentUser();
+    if (u && u.role === "admin") pushLog(u, "Admin logout", "");
+    storage.remove(CONFIG.SESSION_KEY);
+  }
 
   // The role always comes from the saved account, never from the session record.
   function currentUser() {
     const s = storage.read(CONFIG.SESSION_KEY, null);
     if (!s) return null;
     const u = usersRepo.all().find(x => x.id === s.userId);
-    return u ? publicUser(u) : null;
+    if (!u || (u.status && u.status !== "active")) return null; // deactivated/suspended = signed out
+    // an admin session must come from the Admin Login and expires after 2 hours
+    if (u.role === "admin" && (s.admin !== true || Date.now() - s.at > CONFIG.ADMIN_SESSION_MS)) { storage.remove(CONFIG.SESSION_KEY); return null; }
+    return publicUser(u);
   }
 
   function requireRole(role) {
@@ -182,8 +227,44 @@
     return me && me.role === "admin" ? usersRepo.all().map(publicUser) : [];
   }
 
+  // Admin-only: change status or permissions. A real backend must verify the admin session on the server.
+  function adminUpdateUser(id, patch) {
+    const me = currentUser();
+    if (!me || me.role !== "admin") return { ok: false, error: "Not allowed." };
+    const list = usersRepo.all(), u = list.find(x => x.id === id);
+    if (!u) return { ok: false, error: "User not found." };
+    if (u.role === "admin" || u.id === me.id) return { ok: false, error: "Admin accounts can't be changed here." };
+    if (patch.status && ["active", "deactivated", "suspended"].includes(patch.status)) u.status = patch.status;
+    if (patch.perms) u.perms = { sell: !!patch.perms.sell, message: !!patch.perms.message };
+    if (u.role === "seller" && patch.vendorStatus && ["pending", "approved", "rejected"].includes(patch.vendorStatus)) {
+      u.vendorStatus = patch.vendorStatus; u.vendorNote = String(patch.vendorNote || "").slice(0, 300);
+    }
+    usersRepo.save(list);
+    return { ok: true };
+  }
+
+  async function changePassword(cur, next, confirm) {
+    const s = storage.read(CONFIG.SESSION_KEY, null), list = usersRepo.all();
+    const u = s && list.find(x => x.id === s.userId);
+    if (!u || !(await verifyPassword(String(cur || ""), u))) return { ok: false, error: "Current password is incorrect." };
+    next = String(next || "");
+    if (next.length < 8 || !/[a-zA-Z]/.test(next) || !/\d/.test(next)) return { ok: false, error: "Use at least 8 characters, with a letter and a number." };
+    if (next !== confirm) return { ok: false, error: "The new passwords don't match." };
+    u.salt = randomHex(); u.passHash = await hashPassword(next, u.salt);
+    delete u.mustChangePassword;
+    usersRepo.save(list);
+    if (u.role === "admin") pushLog(u, "Changed password", "");
+    return { ok: true };
+  }
+
+  // Admin-only activity log helpers
+  function logActivity(action, detail) { const me = currentUser(); if (!me || me.role !== "admin") return false; pushLog(me, action, detail); return true; }
+  function activityLog() { const me = currentUser(); return me && me.role === "admin" ? storage.read(CONFIG.ACTIVITY_KEY, []).slice().reverse() : []; }
+  // Ids of sellers whose products buyers may see: active account AND approved by an admin
+  const approvedSellerIds = () => usersRepo.all().filter(u => u.role === "seller" && (!u.status || u.status === "active") && (u.vendorStatus || "approved") === "approved").map(u => u.id);
+
   const Auth = {
-    ready, ROLES, PUBLIC_ROLES, register, login, logout, currentUser, requireRole, listUsers,
+    ready, ROLES, PUBLIC_ROLES, register, login, loginAdmin, logout, logActivity, activityLog, approvedSellerIds, currentUser, requireRole, listUsers, adminUpdateUser, changePassword,
     dashboardFor: role => (ROLES[role] || ROLES.local).dashboard
   };
   globalThis.PreservaAuth = Auth;
@@ -267,12 +348,21 @@
   }
 
   function initLogin() {
-    const form = $("loginForm");
+    const form = $("loginForm"), aform = $("adminLoginForm");
     if (!form) return;
     const existing = currentUser();
     if (existing) { location.replace(ROLES[existing.role].dashboard); return; }
 
-    const box = $("formAlert");
+    const box = $("formAlert"), tabU = $("tabUser"), tabA = $("tabAdmin"), sw = $("authSwitch");
+    function show(admin) {
+      form.hidden = admin; if (aform) aform.hidden = !admin;
+      tabU.setAttribute("aria-selected", String(!admin)); tabA.setAttribute("aria-selected", String(admin));
+      if (sw) sw.hidden = admin;
+      setAlert(box, "", ""); clearErrors(form); if (aform) clearErrors(aform);
+    }
+    tabU.addEventListener("click", () => show(false));
+    tabA.addEventListener("click", () => show(true));
+    show(location.hash === "#admin");
     const notice = flash.take();
     if (notice) setAlert(box, notice.type, notice.text);
 
@@ -298,6 +388,27 @@
       const role = ROLES[res.user.role];
       setAlert(box, "success", "Welcome back, " + res.user.fullName + "! Signed in as " + role.label + ". Opening your dashboard...");
       setTimeout(() => location.assign(role.dashboard), 900);
+    });
+
+    aform.addEventListener("submit", async e => {
+      e.preventDefault();
+      clearErrors(aform);
+      setAlert(box, "", "");
+      const email = aform.adminEmail.value.trim(), password = aform.adminPassword.value;
+      if (!email) return fieldError(aform, "adminEmail", "Enter your admin email.");
+      if (!password) return fieldError(aform, "adminPassword", "Enter your password.");
+      const btn = aform.querySelector('button[type="submit"]');
+      setBusy(btn, true);
+      const res = await loginAdmin({ email, password });
+      if (!res.ok) {
+        setBusy(btn, false, "Log in as admin");
+        setAlert(box, "error", res.error);
+        aform.adminPassword.value = "";
+        aform.adminPassword.focus();
+        return;
+      }
+      setAlert(box, "success", "Welcome, " + res.user.fullName + ". Opening the Admin Dashboard...");
+      setTimeout(() => location.assign(ROLES.admin.dashboard), 700);
     });
   }
 
@@ -334,7 +445,7 @@
         setAlert(box, "error", res.error);
         return;
       }
-      flash.set("success", "Account created! Log in with your username or email to continue.");
+      flash.set("success", "Account created! Log in with your username or email to continue." + (res.user.role === "seller" ? " Your seller account must be approved by an administrator before you can list products." : ""));
       setAlert(box, "success", "Account created as " + ROLES[res.user.role].label + ". Taking you to log in...");
       setTimeout(() => location.assign("login.html"), 1200);
     });

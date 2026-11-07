@@ -33,6 +33,11 @@
       <div class="auth-card">
         <div id="formAlert" class="alert" role="alert" hidden></div>
 
+        <div class="auth-tabs" role="tablist" aria-label="Login type">
+          <button type="button" role="tab" id="tabUser" aria-selected="true" aria-controls="loginForm">User Login</button>
+          <button type="button" role="tab" id="tabAdmin" aria-selected="false" aria-controls="adminLoginForm">Admin Login</button>
+        </div>
+
         <form id="loginForm" novalidate>
           <div class="field" data-field="identifier">
             <label for="identifier">Username or email</label>
@@ -51,7 +56,25 @@
           <p class="field-hint center">After you log in, PRESERVA recognizes your account type and opens the right dashboard.</p>
         </form>
 
-        <p class="auth-switch">New to PRESERVA? <a href="register.html">Create an account</a></p>
+        <form id="adminLoginForm" novalidate hidden>
+          <div class="field" data-field="adminEmail">
+            <label for="adminEmail">Admin email</label>
+            <input id="adminEmail" name="adminEmail" type="email" autocomplete="username" placeholder="Enter your admin email">
+            <p class="field-error" role="alert"></p>
+          </div>
+          <div class="field" data-field="adminPassword">
+            <label for="adminPassword">Password</label>
+            <div class="pw-field">
+              <input id="adminPassword" name="adminPassword" type="password" autocomplete="current-password" placeholder="Enter your password">
+              <button type="button" class="pw-toggle" data-target="adminPassword" aria-pressed="false" aria-label="Show password">Show</button>
+            </div>
+            <p class="field-error" role="alert"></p>
+          </div>
+          <button type="submit" class="btn">Log in as admin</button>
+          <p class="field-hint center">For PRESERVA administrators only. Admin accounts can't be created through sign up.</p>
+        </form>
+
+        <p class="auth-switch" id="authSwitch">New to PRESERVA? <a href="register.html">Create an account</a></p>
       </div>
     </div>
   </main>

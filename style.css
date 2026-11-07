@@ -652,3 +652,9 @@ footer .footer-links a:hover { text-decoration: underline; }
 @media (prefers-reduced-motion: reduce) {
   .member-card, .type-card .box, .field input { transition: none; }
 }
+
+/* Login type tabs (User / Admin) */
+.auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; margin: 0 0 22px; background: var(--light-green); border-radius: 12px; }
+.auth-tabs button { padding: 11px; border: 0; border-radius: 9px; background: none; color: var(--dark-green); font-weight: bold; transition: background .2s, box-shadow .2s; }
+.auth-tabs button[aria-selected="true"] { background: var(--white); color: var(--deep-green); box-shadow: 0 2px 8px rgba(18, 77, 44, .15); }
+form[hidden], .auth-switch[hidden] { display: none; }
