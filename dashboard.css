@@ -86,3 +86,33 @@ dialog .row-actions{margin-top:16px;justify-content:flex-end}
 dialog textarea,dialog select{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font:inherit}
 dialog input[type=text],dialog input[type=number]{padding:8px;border:1px solid var(--border);border-radius:8px}
 .dt td small{color:var(--muted)}
+/* PRESERVA ADMIN SIDEBAR LOGO - LOGO ABOVE TEXT */
+.sidebar .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 5px;
+    padding: 20px 10px 18px;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.sidebar .brand img {
+    display: block;
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+.sidebar .brand h1 {
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+}
