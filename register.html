@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up | PRESERVA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="register">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <a href="index.html" class="logo">
+      <img src="Preserva Logo.png" alt="PRESERVA">
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="index.html#products">Rescue Deals</a>
+      <a href="index.html#seller">Become a Seller</a>
+      <a href="index.html#about">About</a>
+      <a href="contact.html">Contact</a>
+      <span class="nav-auth" id="authNav"></span>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div class="page-heading">
+      <h1>Create your account</h1>
+      <p>Join PRESERVA as a buyer or a seller.</p>
+    </div>
+
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div id="formAlert" class="alert" role="alert" hidden></div>
+
+        <form id="registerForm" novalidate>
+        <div class="field" data-field="fullName">
+          <label for="fullName">Full name</label>
+          <input id="fullName" name="fullName" type="text" autocomplete="name" placeholder="Enter your full name">
+          <p class="field-error" role="alert"></p>
+        </div>
+        <div class="field" data-field="email">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+          <p class="field-error" role="alert"></p>
+        </div>
+        <div class="field" data-field="username">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" autocomplete="username" placeholder="Choose a username">
+          <p class="field-hint">3 to 20 characters: letters, numbers, dots, or underscores.</p>
+          <p class="field-error" role="alert"></p>
+        </div>
+        <div class="field" data-field="password">
+          <label for="password">Password</label>
+          <div class="pw-field">
+            <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Create a password">
+            <button type="button" class="pw-toggle" data-target="password" aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
+          <p class="field-error" role="alert"></p>
+        </div>
+        <div class="field" data-field="confirmPassword">
+          <label for="confirmPassword">Confirm password</label>
+          <div class="pw-field">
+            <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Type the password again">
+            <button type="button" class="pw-toggle" data-target="confirmPassword" aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
+          <p class="field-error" role="alert"></p>
+        </div>
+        <p class="field-hint pw-hint">Use at least 8 characters, with a letter and a number.</p>
+
+        <fieldset class="field" data-field="role">
+          <legend>Account type</legend>
+          <div class="type-grid">
+            <label class="type-card">
+              <input type="radio" name="role" value="local">
+              <span class="box"><strong>Local Buyer</strong><small>Buy produce for your household.</small></span>
+            </label>
+            <label class="type-card">
+              <input type="radio" name="role" value="business">
+              <span class="box"><strong>Business Buyer</strong><small>Buy produce for your business.</small></span>
+            </label>
+            <label class="type-card">
+              <input type="radio" name="role" value="seller">
+              <span class="box"><strong>Seller</strong><small>List produce that needs to sell soon.</small></span>
+            </label>
+          </div>
+          <p class="field-hint">Admin accounts are not available through public sign up.</p>
+          <p class="field-error" role="alert"></p>
+        </fieldset>
+
+          <button type="submit" class="btn">Create account</button>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <h3>PRESERVA</h3>
+    <p>Supporting local sellers. Reducing food waste.</p>
+    <p>Panabo City, Davao del Norte</p>
+    <p class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#products">Rescue Deals</a>
+      <a href="index.html#seller">Become a Seller</a>
+      <a href="index.html#about">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html">Log in</a>
+      <a href="register.html">Sign up</a>
+    </p>
+  </footer>
+
+  <script src="auth.js"></script>
+</body>
+</html>

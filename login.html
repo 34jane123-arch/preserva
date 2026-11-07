@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in | PRESERVA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="login">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <a href="index.html" class="logo">
+      <img src="Preserva Logo.png" alt="PRESERVA">
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="index.html#products">Rescue Deals</a>
+      <a href="index.html#seller">Become a Seller</a>
+      <a href="index.html#about">About</a>
+      <a href="contact.html">Contact</a>
+      <span class="nav-auth" id="authNav"></span>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div class="page-heading">
+      <h1>Log in</h1>
+      <p>Welcome back to PRESERVA.</p>
+    </div>
+
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div id="formAlert" class="alert" role="alert" hidden></div>
+
+        <form id="loginForm" novalidate>
+          <div class="field" data-field="identifier">
+            <label for="identifier">Username or email</label>
+            <input id="identifier" name="identifier" autocomplete="username" placeholder="Enter your username or email">
+            <p class="field-error" role="alert"></p>
+          </div>
+        <div class="field" data-field="password">
+          <label for="password">Password</label>
+          <div class="pw-field">
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password">
+            <button type="button" class="pw-toggle" data-target="password" aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
+          <p class="field-error" role="alert"></p>
+        </div>
+          <button type="submit" class="btn">Log in</button>
+          <p class="field-hint center">After you log in, PRESERVA recognizes your account type and opens the right dashboard.</p>
+        </form>
+
+        <p class="auth-switch">New to PRESERVA? <a href="register.html">Create an account</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <h3>PRESERVA</h3>
+    <p>Supporting local sellers. Reducing food waste.</p>
+    <p>Panabo City, Davao del Norte</p>
+    <p class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#products">Rescue Deals</a>
+      <a href="index.html#seller">Become a Seller</a>
+      <a href="index.html#about">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html">Log in</a>
+      <a href="register.html">Sign up</a>
+    </p>
+  </footer>
+
+  <script src="auth.js"></script>
+</body>
+</html>
