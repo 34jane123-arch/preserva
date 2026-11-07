@@ -8,20 +8,19 @@
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body data-role="admin">
-  <div id="dashGate" class="auth-wrap" hidden>
-    <div class="auth-card"><h2>Admins only</h2><p id="gateText"></p><a id="gateBtn" class="btn" href="login.html">Go to my dashboard</a></div>
-  </div>
   <div class="dash" id="dashContent" hidden>
     <aside class="sidebar" id="sidebar" aria-label="Admin navigation">
-      <div class="brand"><img src="" alt="" height="28" onerror="this.remove()"> PRESERVA</div>
+      <div class="brand"><img src="Preserva Logo.png" alt="" height="28" onerror="this.remove()"> PRESERVA</div>
       <button data-view="dashboard" class="on">📊 Dashboard</button>
       <button data-view="users">👥 User Management</button>
+      <button data-view="vendors">🧑‍🌾 Vendor Management <span class="pill warn" id="vendN" hidden>0</span></button>
       <button data-view="products">🥬 Product Management</button>
       <button data-view="orders">📦 Orders &amp; Transactions</button>
-      <button data-view="msgs">🚩 Message Reports</button>
-      <button data-view="analytics">📈 Reports &amp; Analytics</button>
+      <button data-view="reports">🚩 Reports &amp; Feedback <span class="pill warn" id="repN" hidden>0</span></button>
+      <button data-view="analytics">📈 Analytics</button>
+      <button data-view="logs">🧾 Activity Logs</button>
       <button data-view="notifs">🔔 Notifications</button>
-      <button data-view="settings">⚙️ Settings</button>
+      <button data-view="settings">👤 Profile &amp; Settings</button>
       <div class="spacer"></div>
       <button id="logoutBtn">🚪 Logout</button>
     </aside>
@@ -29,15 +28,18 @@
       <div class="dtop">
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
         <h1 id="viewTitle">Dashboard</h1>
-        <input class="gsearch" id="gSearch" type="search" placeholder="Search users or products…" aria-label="Search">
+        <input class="gsearch" id="gSearch" type="search" placeholder="Search users, vendors, products…" aria-label="Search">
         <button class="bell" id="bell" aria-label="Notifications">🔔<b id="bellN" hidden>0</b></button>
         <span class="chip-user"><span id="topAv"></span> <b id="uName"></b> · Admin</span>
       </div>
       <main class="dmain">
+        <div id="pwWarn" class="note warn" hidden>You are using the default administrator password. Open <b>Profile &amp; Settings</b> and change it now.</div>
+
         <section class="view on" id="v-dashboard">
           <div class="stats" id="stats"></div>
+          <div class="stats small" id="stats2"></div>
           <div class="grid2">
-            <div class="panel"><h2>New users (last 6 months)</h2><div id="chUsers"></div></div>
+            <div class="panel"><h2>New buyers and vendors (last 6 months)</h2><div id="chUsers"></div></div>
             <div class="panel"><h2>Products listed (last 6 months)</h2><div id="chProds"></div></div>
             <div class="panel"><h2>Completed transactions (monthly)</h2><div id="chTx"></div></div>
             <div class="panel"><h2>Products by category</h2><div id="chCat"></div></div>
@@ -46,30 +48,48 @@
 
         <section class="view" id="v-users">
           <div class="panel"><div class="fr"><input id="uSearch" type="search" placeholder="Search name, username, email" aria-label="Search users">
-            <select id="uRole" aria-label="Filter by type"><option value="">All account types</option><option value="local">Local Buyer</option><option value="business">Business Buyer</option><option value="seller">Seller</option><option value="admin">Admin</option></select></div>
+            <select id="uRole" aria-label="Filter by type"><option value="">All user types</option><option value="local">Local Buyer</option><option value="business">Business Buyer</option><option value="admin">Admin</option></select>
+            <select id="uStatus" aria-label="Filter by status"><option value="">All statuses</option><option value="active">Active</option><option value="deactivated">Deactivated</option><option value="suspended">Suspended</option></select></div>
             <div id="userTable"></div>
-            <p class="hint">Admin accounts can't be created through public sign up, and can't be edited here.</p></div>
+            <p class="hint">Vendors are managed under Vendor Management. Admin accounts can't be edited here.</p></div>
+        </section>
+
+        <section class="view" id="v-vendors">
+          <div class="panel"><div class="fr"><input id="vSearch" type="search" placeholder="Search vendor name, username, email" aria-label="Search vendors">
+            <select id="vApproval" aria-label="Filter by approval"><option value="">All registrations</option><option value="pending">Pending approval</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select>
+            <select id="vStatus" aria-label="Filter by account status"><option value="">All statuses</option><option value="active">Active</option><option value="deactivated">Deactivated</option><option value="suspended">Suspended</option></select></div>
+            <div id="vendorTable"></div>
+            <p class="hint">Buyers only see products from approved, active vendors. Suspending a vendor hides their products right away.</p></div>
         </section>
 
         <section class="view" id="v-products">
-          <div class="panel"><div class="fr"><input id="pSearch" type="search" placeholder="Search product or seller" aria-label="Search products">
-            <select id="pCat"><option value="">All categories</option><option>Fruits</option><option>Vegetables</option><option>Fish</option><option>Others</option></select>
-            <select id="pFresh"><option value="">All freshness</option><option>Fresh</option><option>Not So Fresh</option><option>Unsold Yesterday</option><option>Damaged but Still Usable</option></select>
-            <select id="pStatus"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+          <div class="panel"><div class="fr"><input id="pSearch" type="search" placeholder="Search product or vendor" aria-label="Search products">
+            <select id="pCat" aria-label="Category"><option value="">All categories</option><option>Fruits</option><option>Vegetables</option><option>Fish</option><option>Others</option></select>
+            <select id="pFresh" aria-label="Freshness"><option value="">All freshness</option><option>Fresh</option><option>Not So Fresh</option><option>Unsold Yesterday</option><option>Damaged but Still Usable</option></select>
+            <select id="pStatus" aria-label="Status"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
             <div id="prodTable"></div></div>
         </section>
 
         <section class="view" id="v-orders">
           <div class="note">Admins monitor orders but can't mark them completed. Only the seller's own confirmation does that. Admins may cancel an unfinished order.</div>
-          <div class="panel"><div class="fr"><input id="oSearch" type="search" placeholder="Search order, buyer, seller, product" aria-label="Search orders">
-            <select id="oStatus"><option value="">All statuses</option></select></div>
+          <div class="panel"><div class="fr"><input id="oSearch" type="search" placeholder="Search order, buyer, vendor, product" aria-label="Search orders">
+            <select id="oStatus" aria-label="Order status"><option value="">All statuses</option></select></div>
             <div id="orderTable"></div></div>
         </section>
 
-        <section class="view" id="v-msgs">
-          <div class="note">Only reported items are shown, never private conversations. Messaging arrives in a later step, so use the demo button to test moderation.
-            <button class="btn-sm ghost" id="demoReport">Add demo report</button></div>
-          <div class="panel"><h2>Reports</h2><div id="reportTable"></div></div>
+        <section class="view" id="v-reports">
+          <div class="panel"><h2>Customer reports and complaints</h2>
+            <div class="fr"><select id="rType" aria-label="Report type"><option value="">All types</option><option value="product">Listing</option><option value="account">Account</option><option value="message">Message</option></select>
+              <select id="rStatus" aria-label="Report status"><option value="">All statuses</option><option value="open">Open</option><option value="resolved">Resolved</option><option value="dismissed">Dismissed</option></select></div>
+            <div id="reportTable"></div>
+            <p class="hint">Message reports show only the reported message, never the private conversation.</p></div>
+          <div class="grid2">
+            <div class="panel"><h2>Store ratings</h2><div id="ratingTable"></div></div>
+          </div>
+          <div class="panel"><h2>Buyer feedback</h2>
+            <div class="fr"><input id="fbSearch" type="search" placeholder="Search buyer, vendor, product, comment" aria-label="Search feedback">
+              <select id="fbRating" aria-label="Rating"><option value="">All ratings</option><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></div>
+            <div id="fbTable"></div></div>
         </section>
 
         <section class="view" id="v-analytics">
@@ -84,15 +104,21 @@
           </div>
         </section>
 
+        <section class="view" id="v-logs">
+          <div class="panel"><div class="fr"><input id="lSearch" type="search" placeholder="Search administrator, action or details" aria-label="Search activity logs"></div>
+            <div id="logTable"></div></div>
+        </section>
+
         <section class="view" id="v-notifs">
           <div class="panel"><div class="fr"><button class="btn-sm ghost" id="readAll">Mark all as read</button></div><div id="notifList"></div></div>
         </section>
 
         <section class="view" id="v-settings">
           <div class="grid2">
-            <div class="panel"><h2>Admin profile</h2>
+            <div class="panel"><h2>Administrator profile</h2>
               <p><span id="pfAv"></span></p>
               <p>Name: <b id="pfName"></b></p><p>Username: <b id="pfUser"></b></p><p>Email: <b id="pfEmail"></b></p>
+              <p>Role: <b>Administrator</b></p><p>Account created: <b id="pfSince"></b></p><p>Previous sign-in: <b id="pfLast"></b></p>
               <label for="picIn">Profile picture</label><input id="picIn" type="file" accept="image/*">
               <p class="hint">Name, username and email can only be edited once a backend exists.</p></div>
             <div class="panel"><h2>Change password</h2>
@@ -101,7 +127,7 @@
                 <div><label for="pwNew">New password</label><input id="pwNew" type="password" autocomplete="new-password"></div>
                 <div><label for="pwCf">Confirm new password</label><input id="pwCf" type="password" autocomplete="new-password"></div>
                 <p id="pwMsg" role="status" style="margin:0"></p><button class="btn" type="submit">Update password</button></form></div>
-            <div class="panel"><h2>Account</h2><button class="btn" id="logoutBtn2">Log out</button></div>
+            <div class="panel"><h2>Account</h2><p class="hint">Admin sessions end automatically after 2 hours.</p><button class="btn" id="logoutBtn2">Log out</button></div>
           </div>
         </section>
       </main>
@@ -112,4 +138,4 @@
   <script src="auth.js"></script>
   <script src="admin.js"></script>
 </body>
-</html>
+</html> 
