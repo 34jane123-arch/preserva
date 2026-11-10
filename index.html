@@ -1,321 +1,1203 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PRESERVA | Fresh Produce, Less Waste</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <a class="skip" href="#main">Skip to content</a>
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PreServa - Agri-Tech Waste Rescue Platform</title>
 
-  <header class="navbar">
-    <a href="#home" class="logo" data-page="home">
-      <img src="Preserva Logo.png" alt="PRESERVA">
-    </a>
-    <nav aria-label="Main">
-      <a href="#home" data-page="home">Home</a>
-      <a href="#products" data-page="products">Rescue Deals</a>
-      <a href="#seller" data-page="seller">Become a Seller</a>
-      <a href="#about" data-page="about">About</a>
-      <a href="contact.html">Contact</a>
-      <span class="nav-auth" id="authNav"></span>
-    </nav>
-  </header>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <main id="main">
-    <!-- HOME -->
-    <section id="home" class="page active">
-      <div class="hero">
-        <div class="hero-content">
-          <span class="tag">Sell Fresh. Save More. Waste Less</span>
-          <h1 tabindex="-1">Good produce shouldn't go to waste.</h1>
-          <p>
-            Sellers in Panabo City mark down ripe fruits and vegetables
-            that need to sell today. Find a deal, call the seller, and
-            pick it up at the market.
+    <!-- Material Symbols Icons -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', "sans-serif"],
+            },
+            colors: {
+              brand: {
+                50: "#f2fbf4",
+                100: "#e1f7e7",
+                200: "#c5eed0",
+                300: "#98dfab",
+                400: "#64c87f",
+                500: "#3baa5c",
+                600: "#2c8b47",
+                700: "#246e3a",
+                800: "#205731",
+                900: "#14532d", // Primary deep forest green
+                950: "#0c2e18",
+              },
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0px)" },
+                "50%": { transform: "translateY(-6px)" },
+              },
+              shimmer: {
+                "100%": { transform: "translateX(100%)" },
+              },
+            },
+            animation: {
+              float: "float 3.5s ease-in-out infinite",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* Base typography & smooth theme */
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8faf5;
+        color: #1a2e22;
+        overflow-x: hidden;
+      }
+
+      /* Scroll reveal animation classes */
+      .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition:
+          opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+      }
+
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Accessible reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+        .animate-float {
+          animation: none !important;
+        }
+      }
+
+      /* Custom subtle glass & scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5ee;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #c2cfbf;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #14532d;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#f8faf5] text-[#1e2a22] antialiased selection:bg-brand-200 selection:text-brand-900"
+  >
+    <!-- ==================== STICKY HEADER & NAV ==================== -->
+    <header
+      id="site-header"
+      class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#f8faf5]/90 backdrop-blur-md border-b border-brand-900/10"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between"
+      >
+        <!-- Logo -->
+        <a href="#home" class="flex items-center gap-3 group">
+          <img
+            src="onlylogo.png"
+            alt="PreServa Logo"
+            class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-105"
+            onerror="
+              this.onerror = null;
+              this.src = 'https://placehold.co/80x80/14532d/white?text=P';
+            "
+          />
+          <div class="flex flex-col">
+            <span
+              class="text-xl font-extrabold tracking-tight text-brand-900 leading-none"
+              >PRESERVA</span
+            >
+            <span
+              class="text-[11px] font-semibold tracking-wider text-brand-600 uppercase"
+              >Agri-Tech Platform</span
+            >
+          </div>
+        </a>
+
+        <!-- 4 Strict Navigation Items -->
+        <nav class="hidden md:flex items-center gap-8">
+          <a
+            href="#home"
+            class="nav-link text-sm font-semibold text-brand-900 border-b-2 border-brand-900 pb-1 transition-colors"
+            >Home</a
+          >
+          <a
+            href="#prototype"
+            class="nav-link text-sm font-medium text-gray-600 hover:text-brand-900 pb-1 transition-colors"
+            >Our Prototype</a
+          >
+          <a
+            href="#about"
+            class="nav-link text-sm font-medium text-gray-600 hover:text-brand-900 pb-1 transition-colors"
+            >About Us</a
+          >
+          <a
+            href="#contact"
+            class="nav-link text-sm font-medium text-gray-600 hover:text-brand-900 pb-1 transition-colors"
+            >Contact Us</a
+          >
+        </nav>
+
+        <!-- Trailing Action -->
+        <div class="flex items-center gap-4">
+          <a
+            href="#prototype"
+            class="px-5 py-2.5 rounded-full bg-brand-900 text-white text-sm font-semibold hover:bg-brand-800 active:scale-95 transition-all shadow-sm shadow-brand-900/20 flex items-center gap-1.5"
+          >
+            <span>Explore Prototype</span>
+            <span class="material-symbols-outlined text-base"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==================== HOME (HERO) SECTION ==================== -->
+    <section id="home" class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Left Content -->
+        <div class="lg:col-span-7 space-y-6 reveal">
+          <div
+            class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 border border-brand-300 text-brand-800 text-xs font-bold uppercase tracking-wider"
+          >
+            <span class="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
+            Agricultural Waste Rescue System
+          </div>
+
+          <h1
+            class="text-4xl sm:text-6xl font-extrabold tracking-tight text-brand-900 leading-[1.1]"
+          >
+            Sell Fresh. <br />
+            Save More. <br />
+            <span class="text-brand-600">Waste Less.</span>
+          </h1>
+
+          <p class="text-lg text-gray-700 max-w-xl leading-relaxed">
+            An agricultural technology platform designed to help local market
+            vendors reduce food waste while making fresh and affordable produce
+            accessible to the community.
           </p>
-          <button class="btn" data-page="products">See today's deals</button>
-          <button class="btn btn-light" data-page="seller">Become a seller</button>
-        </div>
-        <div class="hero-image">
-          <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1000&q=85"
-               alt="Fresh vegetables">
-        </div>
-      </div>
 
-      <div class="impact">
-        <div><strong id="impactKg">0</strong><span>kg of produce up for rescue today</span></div>
-        <div><strong id="impactDeals">0</strong><span>deals from local sellers</span></div>
-        <div><strong id="impactSave">₱0</strong><span>saved by buyers if all sell</span></div>
-      </div>
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a
+              href="#prototype"
+              class="px-7 py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 text-white font-semibold text-base transition-all shadow-md shadow-brand-900/20 active:scale-95 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined">explore</span>
+              <span>Explore Prototype</span>
+            </a>
+            <a
+              href="#about"
+              class="px-7 py-3.5 rounded-full bg-white hover:bg-gray-50 text-brand-900 font-semibold text-base border border-gray-200 transition-all shadow-sm active:scale-95 flex items-center gap-2"
+            >
+              <span>Learn More About Us</span>
+              <span class="material-symbols-outlined">arrow_downward</span>
+            </a>
+          </div>
 
-      <div class="section">
-        <h2>How PRESERVA works</h2>
-        <p class="subtitle">Three steps from stall to kitchen.</p>
-        <div class="features">
-          <article class="feature">
-            <div class="feature-icon">🥬</div>
-            <h3>Sellers post</h3>
-            <p>Vendors list produce that needs to sell soon, at a lower price.</p>
-          </article>
-          <article class="feature">
-            <div class="feature-icon">🔎</div>
-            <h3>Buyers browse</h3>
-            <p>Compare prices, see how much is left, and check pickup times.</p>
-          </article>
-          <article class="feature">
-            <div class="feature-icon">🤝</div>
-            <h3>Visit and buy</h3>
-            <p>Call the seller, get directions, and pay at the market.</p>
-          </article>
-        </div>
-      </div>
-
-      <div class="callout">
-        <h2>Help good produce find a buyer.</h2>
-        <p>Every kilo sold is a kilo that doesn't get thrown away.</p>
-        <button class="btn" data-page="about">Learn about us</button>
-      </div>
-    </section>
-
-    <!-- PRODUCTS -->
-    <section id="products" class="page">
-      <div class="page-heading">
-        <h1 tabindex="-1">Rescue deals</h1>
-        <p>Sample listings for our Panabo market demo.</p>
-      </div>
-
-      <div class="toolbar">
-        <input id="searchInput" type="search"
-               placeholder="Search produce or sellers" aria-label="Search products">
-        <label class="sort">Sort by
-          <select id="sortSelect">
-            <option value="default">Featured</option>
-            <option value="discount">Biggest discount</option>
-            <option value="price">Lowest price</option>
-            <option value="ending">Ending soonest</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="filters">
-        <button class="filter active" data-category="All">All</button>
-        <button class="filter" data-category="Vegetables">Vegetables</button>
-        <button class="filter" data-category="Fruits">Fruits</button>
-      </div>
-
-      <p id="productCount" class="subtitle" role="status"></p>
-      <div id="productGrid" class="product-grid"></div>
-    </section>
-
-    <!-- SELLER -->
-    <section id="seller" class="page">
-      <div class="page-heading">
-        <h1 tabindex="-1">Become a seller</h1>
-        <p>Tell nearby buyers what you have and when it needs to sell.</p>
-      </div>
-
-      <div class="seller-layout">
-        <aside class="seller-side">
-          <h2>Why sell on PRESERVA</h2>
-          <ul class="benefits">
-            <li>Sell produce before it spoils</li>
-            <li>Reach buyers near your market</li>
-            <li>Buyers call or text you directly</li>
-            <li>Works on any phone, no app to install</li>
-          </ul>
-
-          <p class="preview-label">How buyers will see your deal</p>
-          <article class="product-card preview" aria-label="Preview of your deal">
-            <span class="badge" id="pvBadge">Sell today</span>
-            <div class="preview-img" id="pvImg">🥬</div>
-            <div class="product-info">
-              <h3 id="pvName">Your produce</h3>
-              <div class="price-row">
-                <span class="price" id="pvPrice">Set your price</span>
-                <s class="old-price" id="pvOld"></s>
+          <!-- Metric Badges -->
+          <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
+            <div>
+              <div class="text-2xl font-black text-brand-900">100%</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">
+                Consumable Produce
               </div>
-              <ul class="meta">
-                <li id="pvQty">Quantity left</li>
-                <li id="pvUntil">Pickup until 5 PM today</li>
-                <li id="pvStall">Your stall · Your market</li>
-              </ul>
             </div>
-          </article>
-        </aside>
-
-        <div>
-          <form id="sellerForm" class="seller-form" novalidate>
-            <fieldset>
-              <legend>About you</legend>
-              <label for="sellerName">Full name</label>
-              <input id="sellerName" name="sellerName" autocomplete="name" placeholder="Your name">
-              <label for="sellerPhone">Mobile number</label>
-              <input id="sellerPhone" name="sellerPhone" type="tel" inputmode="tel"
-                     autocomplete="tel" placeholder="09XX XXX XXXX">
-              <p class="hint">Buyers will see this number so they can call or text you.</p>
-            </fieldset>
-
-            <fieldset>
-              <legend>Your stall</legend>
-              <label for="businessName">Business or stall name</label>
-              <input id="businessName" name="businessName" placeholder="Your stall name">
-              <label for="sellerLocation">Market location</label>
-              <input id="sellerLocation" name="sellerLocation" placeholder="Example: Panabo Central Market">
-            </fieldset>
-
-            <fieldset>
-              <legend>What are you selling?</legend>
-              <div class="chips">
-                <label class="chip"><input type="checkbox" name="produce" value="Pechay" data-emoji="🥬"><span>🥬 Pechay</span></label>
-                <label class="chip"><input type="checkbox" name="produce" value="Sayote" data-emoji="🥒"><span>🥒 Sayote</span></label>
-                <label class="chip"><input type="checkbox" name="produce" value="Tomatoes" data-emoji="🍅"><span>🍅 Tomatoes</span></label>
-                <label class="chip"><input type="checkbox" name="produce" value="Carrots" data-emoji="🥕"><span>🥕 Carrots</span></label>
-                <label class="chip"><input type="checkbox" name="produce" value="Eggplant" data-emoji="🍆"><span>🍆 Eggplant</span></label>
-                <label class="chip"><input type="checkbox" name="produce" value="Squash" data-emoji="🎃"><span>🎃 Squash</span></label>
-                <label class="chip"><input type="checkbox" name="produce" value="Bananas" data-emoji="🍌"><span>🍌 Bananas</span></label>
-                <label class="chip"><input type="checkbox" name="produce" value="Mangoes" data-emoji="🥭"><span>🥭 Mangoes</span></label>
+            <div>
+              <div class="text-2xl font-black text-brand-900">Zero</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">
+                Upfront Vendor Fee
               </div>
-              <label for="otherProduce">Something else?</label>
-              <input id="otherProduce" name="otherProduce" placeholder="Example: Okra, calamansi">
-            </fieldset>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-brand-900">Hyperlocal</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">
+                Market Recovery
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <fieldset>
-              <legend>Your first deal (optional)</legend>
-              <div class="field-row">
-                <div>
-                  <label for="price">Rescue price (₱)</label>
-                  <input id="price" name="price" type="number" min="0" inputmode="decimal" placeholder="35">
+        <!-- Right Hero Graphic -->
+        <div
+          class="lg:col-span-5 relative reveal"
+          style="transition-delay: 150ms"
+        >
+          <div
+            class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100 group"
+          >
+            <img
+              src="home.jpg"
+              alt="Panabo Public Market Vendor Stalls"
+              class="w-full h-[440px] object-cover transition-transform duration-700 group-hover:scale-105"
+              onerror="
+                this.onerror = null;
+                this.src =
+                  'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80';
+              "
+            />
+
+            <!-- Floating Badge -->
+            <div
+              class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-brand-100 flex items-center justify-between"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-full bg-brand-100 text-brand-800 flex items-center justify-center font-bold"
+                >
+                  <span class="material-symbols-outlined text-xl"
+                    >storefront</span
+                  >
                 </div>
                 <div>
-                  <label for="oldPrice">Usual price (₱)</label>
-                  <input id="oldPrice" name="oldPrice" type="number" min="0" inputmode="decimal" placeholder="50">
+                  <p class="text-xs font-bold text-brand-900">
+                    Public Market Vendor Stalls
+                  </p>
+                  <p class="text-[11px] text-gray-500 font-medium">
+                    Live Fresh Produce Batching Active
+                  </p>
                 </div>
               </div>
-              <div class="field-row">
+              <span
+                class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-800"
+              >
+                Active Hub
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Core Feature Highlights -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+        <div
+          class="p-6 rounded-2xl bg-white border border-gray-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all reveal"
+        >
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4"
+          >
+            <span class="material-symbols-outlined text-2xl">percent</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">
+            Freshness-Based Discounts
+          </h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Helping vendors recover costs through dynamic, time-sensitive
+            markdowns before fruit and vegetables reach their spoilage window.
+          </p>
+        </div>
+
+        <div
+          class="p-6 rounded-2xl bg-white border border-gray-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all reveal"
+          style="transition-delay: 100ms"
+        >
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4"
+          >
+            <span class="material-symbols-outlined text-2xl">receipt_long</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">
+            Product Reservations
+          </h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Connecting vendors instantly with budget-conscious household buyers
+            and local food businesses seeking guaranteed daily fresh crates.
+          </p>
+        </div>
+
+        <div
+          class="p-6 rounded-2xl bg-white border border-gray-200/80 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all reveal"
+          style="transition-delay: 200ms"
+        >
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4"
+          >
+            <span class="material-symbols-outlined text-2xl">recycling</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">
+            Hyperlocal Food Rescue
+          </h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Ensuring safe, consumable, and imperfect produce is systematically
+            salvaged every market morning and late afternoon cycle.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== OUR PROTOTYPE SECTION (23 CLEAN SLOTS) ==================== -->
+    <section
+      id="prototype"
+      class="py-24 bg-[#f2f5ee] border-y border-brand-900/10"
+    >
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-10 reveal">
+          <div
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3"
+          >
+            <span class="material-symbols-outlined text-sm">devices</span>
+            PreServa Architecture & Design Blueprint
+          </div>
+          <h2
+            class="text-3xl sm:text-5xl font-extrabold text-brand-900 tracking-tight"
+          >
+            Our Prototype
+          </h2>
+          <p class="text-gray-600 mt-3 text-base">
+            Interactive System Showcase & Mobile Application Interface. The
+            slots below represent the complete 23-screen workflow ready for
+            prototype screens.
+          </p>
+        </div>
+
+        <!-- Category Filter Tabs -->
+        <div
+          class="flex flex-wrap items-center justify-center gap-2 mb-10 reveal"
+        >
+          <button
+            onclick="filterSlots('all')"
+            class="proto-tab active px-5 py-2 rounded-full text-xs font-bold bg-brand-900 text-white shadow-sm transition-all"
+            data-category="all"
+          >
+            All Screens (23)
+          </button>
+          <button
+            onclick="filterSlots('vendor')"
+            class="proto-tab px-5 py-2 rounded-full text-xs font-bold bg-white text-gray-700 hover:bg-brand-100 border border-gray-200 transition-all"
+            data-category="vendor"
+          >
+            Vendor Mobile App (Slots 1–8)
+          </button>
+          <button
+            onclick="filterSlots('buyer')"
+            class="proto-tab px-5 py-2 rounded-full text-xs font-bold bg-white text-gray-700 hover:bg-brand-100 border border-gray-200 transition-all"
+            data-category="buyer"
+          >
+            Buyer Interface (Slots 9–16)
+          </button>
+          <button
+            onclick="filterSlots('engine')"
+            class="proto-tab px-5 py-2 rounded-full text-xs font-bold bg-white text-gray-700 hover:bg-brand-100 border border-gray-200 transition-all"
+            data-category="engine"
+          >
+            Inventory & Freshness Engine (Slots 17–23)
+          </button>
+        </div>
+
+        <!-- 23 Prototype Slots Grid (Clean: Badge, Icon, Title only) -->
+        <div
+          id="prototype-grid"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        >
+          <!-- Javascript dynamically renders slots or static fallbacks -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ABOUT US SECTION ==================== -->
+    <section id="about" class="py-24 px-6 max-w-7xl mx-auto">
+      <!-- Header Banner -->
+      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+        <div
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-100 border border-brand-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3"
+        >
+          <span class="material-symbols-outlined text-sm">eco</span>
+          About the PreServa Vision
+        </div>
+        <h2
+          class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight"
+        >
+          PRESERVA — Sell Fresh. Save More. Waste Less.
+        </h2>
+        <div
+          class="mt-6 space-y-4 text-gray-700 text-base leading-relaxed text-justify sm:text-center"
+        >
+          <p>
+            PRESERVA is an agricultural technology platform designed to help
+            local market vendors reduce food waste while making fresh and
+            affordable produce accessible to the community. It connects vendors
+            with local buyers and businesses through freshness-based discounts,
+            imperfect but safe produce listings, and product reservations.
+          </p>
+          <p>
+            Through PRESERVA, we aim to give unsold produce another opportunity
+            to be sold instead of going to waste, helping vendors recover their
+            costs and allowing buyers to enjoy affordable products.
+          </p>
+        </div>
+      </div>
+
+      <!-- Goal, Mission, Vision Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <!-- Our Goal -->
+        <div
+          class="p-8 rounded-3xl bg-white border border-gray-200/80 shadow-sm hover:shadow-md transition-all reveal"
+        >
+          <div
+            class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6"
+          >
+            <span class="material-symbols-outlined text-2xl"
+              >track_changes</span
+            >
+          </div>
+          <span
+            class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1"
+            >Target Milestone</span
+          >
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Goal</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To reduce fruit and vegetable spoilage among local market vendors by
+            providing an accessible platform where unsold and surplus produce
+            can be sold at discounted prices before they spoil. PRESERVA aims to
+            help vendors earn, buyers save, and communities minimize food waste.
+          </p>
+        </div>
+
+        <!-- Our Mission -->
+        <div
+          class="p-8 rounded-3xl bg-white border border-gray-200/80 shadow-sm hover:shadow-md transition-all reveal"
+          style="transition-delay: 150ms"
+        >
+          <div
+            class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6"
+          >
+            <span class="material-symbols-outlined text-2xl">flag</span>
+          </div>
+          <span
+            class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1"
+            >Our Mandate</span
+          >
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Mission</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To connect local vendors, household buyers, and businesses through a
+            convenient and affordable digital platform that promotes responsible
+            purchasing, reduces food waste, supports local livelihoods, and
+            makes fresh produce more accessible to everyone.
+          </p>
+        </div>
+
+        <!-- Our Vision -->
+        <div
+          class="p-8 rounded-3xl bg-white border border-gray-200/80 shadow-sm hover:shadow-md transition-all reveal"
+          style="transition-delay: 300ms"
+        >
+          <div
+            class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6"
+          >
+            <span class="material-symbols-outlined text-2xl">visibility</span>
+          </div>
+          <span
+            class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1"
+            >Long-Term Future</span
+          >
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Vision</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To become a trusted agricultural technology platform that helps
+            build a community where no good produce goes to waste, local vendors
+            thrive, and everyone has access to affordable and quality food.
+          </p>
+        </div>
+      </div>
+
+      <!-- Our Core Values -->
+      <div class="reveal">
+        <div class="text-center mb-10">
+          <span
+            class="text-xs font-bold uppercase tracking-widest text-brand-600"
+            >Guiding Principles</span
+          >
+          <h3 class="text-3xl font-extrabold text-brand-900">
+            Our Core Values
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div
+            class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3"
+            >
+              01
+            </div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">
+              Sustainability
+            </h4>
+            <p class="text-xs text-gray-600">
+              Promoting responsible consumption and reducing food waste.
+            </p>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3"
+            >
+              02
+            </div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">
+              Community Support
+            </h4>
+            <p class="text-xs text-gray-600">
+              Helping local vendors and buyers benefit from affordable produce.
+            </p>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3"
+            >
+              03
+            </div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">Affordability</h4>
+            <p class="text-xs text-gray-600">
+              Making quality and safe produce accessible at reasonable prices.
+            </p>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3"
+            >
+              04
+            </div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">
+              Responsibility
+            </h4>
+            <p class="text-xs text-gray-600">
+              Encouraging people to value food and avoid unnecessary waste.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CONTACT US & TEAM SECTION ==================== -->
+    <section
+      id="contact"
+      class="py-24 bg-[#f2f5ee] border-t border-brand-900/10"
+    >
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+          <div
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3"
+          >
+            <span class="material-symbols-outlined text-sm">support_agent</span>
+            Get in Touch with PreServa
+          </div>
+          <h2
+            class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight"
+          >
+            Team & Contact
+          </h2>
+          <p class="text-gray-600 mt-3 text-base">
+            Have questions about PreServa or want to connect with our team? Feel
+            free to reach out to us through our social media accounts or contact
+            numbers.
+          </p>
+        </div>
+
+        <!-- 3 Team Member Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <!-- M Jayross Cruspero -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal"
+          >
+            <div
+              class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100"
+            >
+              <img
+                src="MJ.png"
+                alt="M Jayross Cruspero"
+                class="w-full h-full object-cover"
+                onerror="
+                  this.onerror = null;
+                  this.src =
+                    'https://placehold.co/200x200/14532d/white?text=MJ';
+                "
+              />
+            </div>
+            <span
+              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2"
+              >Lead Dev</span
+            >
+            <h3 class="text-xl font-bold text-brand-900">M Jayross Cruspero</h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">
+              Lead Developer & Agri-Tech Researcher
+            </p>
+            <p class="text-xs text-gray-500 mb-6">
+              Specializing in backend system architecture, vendor batch logic,
+              and market waste mapping algorithms.
+            </p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a
+                href="https://www.facebook.com/mjay.cruspero.7/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="Facebook.png"
+                    alt="Facebook"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';
+                    "
+                  />
+                  <span>mjay.cruspero.7</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >open_in_new</span
+                >
+              </a>
+              <a
+                href="tel:09945493313"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="phone.png"
+                    alt="Phone"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://cdn-icons-png.flaticon.com/512/724/724664.png';
+                    "
+                  />
+                  <span>09945493313</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >call</span
+                >
+              </a>
+            </div>
+          </div>
+
+          <!-- Christian Francisco -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal"
+            style="transition-delay: 150ms"
+          >
+            <div
+              class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100"
+            >
+              <img
+                src="Christian.png"
+                alt="Christian Francisco"
+                class="w-full h-full object-cover"
+                onerror="
+                  this.onerror = null;
+                  this.src =
+                    'https://placehold.co/200x200/14532d/white?text=CF';
+                "
+              />
+            </div>
+            <span
+              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2"
+              >UI/UX Arch</span
+            >
+            <h3 class="text-xl font-bold text-brand-900">
+              Christian Francisco
+            </h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">
+              System Analyst & Product Strategist
+            </p>
+            <p class="text-xs text-gray-500 mb-6">
+              Focusing on field user interviews with public market vendors,
+              workflow optimization, and prototype validation.
+            </p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a
+                href="https://www.facebook.com/peppertian"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="Facebook.png"
+                    alt="Facebook"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';
+                    "
+                  />
+                  <span>peppertian</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >open_in_new</span
+                >
+              </a>
+              <a
+                href="tel:09637411495"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="phone.png"
+                    alt="Phone"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://cdn-icons-png.flaticon.com/512/724/724664.png';
+                    "
+                  />
+                  <span>09637411495</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >call</span
+                >
+              </a>
+            </div>
+          </div>
+
+          <!-- Jhun Rey Flores -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal"
+            style="transition-delay: 300ms"
+          >
+            <div
+              class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100"
+            >
+              <img
+                src="JR.jpg"
+                alt="Jhun Rey Flores"
+                class="w-full h-full object-cover"
+                onerror="
+                  this.onerror = null;
+                  this.src =
+                    'https://placehold.co/200x200/14532d/white?text=JR';
+                "
+              />
+            </div>
+            <span
+              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2"
+              >Project Lead</span
+            >
+            <h3 class="text-xl font-bold text-brand-900">Jhun Rey Flores</h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">
+              Mobile Interface Designer & QA
+            </p>
+            <p class="text-xs text-gray-500 mb-6">
+              Crafting accessible, high-contrast mobile interaction flows
+              tailored for active outdoor market environments.
+            </p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a
+                href="https://www.facebook.com/ewpoke"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="Facebook.png"
+                    alt="Facebook"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';
+                    "
+                  />
+                  <span>ewpoke</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >open_in_new</span
+                >
+              </a>
+              <a
+                href="tel:09631104216"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="phone.png"
+                    alt="Phone"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://cdn-icons-png.flaticon.com/512/724/724664.png';
+                    "
+                  />
+                  <span>09631104216</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >call</span
+                >
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Institutional Map & Inquiry Form -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Location Section (DNSC) -->
+          <div
+            class="lg:col-span-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm reveal"
+          >
+            <div
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2"
+            >
+              <span class="material-symbols-outlined text-sm">location_on</span>
+              Physical Institution & Research Lab
+            </div>
+            <h3 class="text-2xl font-black text-brand-900 mb-2">
+              You Can Find Us Here
+            </h3>
+            <p class="text-xs text-gray-600 mb-4">
+              PreServa is a student startup project developed by BSIS students
+              of Davao del Norte State College. Visit our institution to learn
+              more about our project.
+            </p>
+
+            <div
+              class="p-3.5 rounded-2xl bg-brand-50 border border-brand-200 mb-4 text-xs font-medium text-brand-900"
+            >
+              <strong>Davao del Norte State College (DNSC)</strong><br />
+              New Visayas, Panabo City, Davao del Norte, Philippines 8105
+            </div>
+
+            <!-- Responsive Google Map iframe -->
+            <div
+              class="w-full h-64 rounded-2xl overflow-hidden border border-gray-200 mb-4 bg-gray-100"
+            >
+              <iframe
+                src="https://maps.google.com/maps?q=Davao%20del%20Norte%20State%20College,%20Panabo%20City&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                class="w-full h-full border-0"
+                allowfullscreen=""
+                loading="lazy"
+              >
+              </iframe>
+            </div>
+
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=Davao+del+Norte+State+College,+Panabo+City,+Davao+del+Norte,+Philippines"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full py-3 rounded-full bg-brand-900 hover:bg-brand-800 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"
+            >
+              <span class="material-symbols-outlined text-sm">navigation</span>
+              <span>Get Directions to DNSC</span>
+            </a>
+          </div>
+
+          <!-- Working Dispatch Form with Toast Animation -->
+          <div
+            class="lg:col-span-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm reveal"
+            style="transition-delay: 150ms"
+          >
+            <div
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2"
+            >
+              <span class="material-symbols-outlined text-sm">send</span>
+              Direct Dispatch
+            </div>
+            <h3 class="text-2xl font-black text-brand-900 mb-2">
+              Send PreServa a Message
+            </h3>
+            <p class="text-xs text-gray-600 mb-6">
+              Are you a market vendor, commercial enterprise, or institutional
+              reviewer? Leave us a direct inquiry below.
+            </p>
+
+            <form
+              id="contact-form"
+              onsubmit="handleFormSubmit(event)"
+              class="space-y-4"
+            >
+              <div>
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase mb-1"
+                  >Full Name</label
+                >
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Maria Santos"
+                  class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label for="unit">Sold per</label>
-                  <select id="unit" name="unit">
-                    <option value="kg">kg</option>
-                    <option value="bunch">bunch</option>
-                    <option value="piece">piece</option>
+                  <label
+                    class="block text-xs font-bold text-gray-700 uppercase mb-1"
+                    >Email / Phone</label
+                  >
+                  <input
+                    type="text"
+                    required
+                    placeholder="name@domain.com or 09..."
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-xs font-bold text-gray-700 uppercase mb-1"
+                    >Subject</label
+                  >
+                  <select
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600 bg-white"
+                  >
+                    <option>General Inquiry</option>
+                    <option>Vendor Participation</option>
+                    <option>Bulk Buyer Partnership</option>
                   </select>
                 </div>
-                <div>
-                  <label for="qty">How many left</label>
-                  <input id="qty" name="qty" type="number" min="1" inputmode="numeric" placeholder="10">
-                </div>
               </div>
-              <label for="until">Buyers can pick up until</label>
-              <select id="until" name="until">
-                <option value="14">2 PM</option>
-                <option value="15">3 PM</option>
-                <option value="16">4 PM</option>
-                <option value="17" selected>5 PM</option>
-                <option value="18">6 PM</option>
-                <option value="19">7 PM</option>
-                <option value="20">8 PM</option>
-              </select>
-            </fieldset>
 
-            <button type="submit" class="btn">Send registration</button>
-            <p id="formMessage" role="status"></p>
-          </form>
+              <div>
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase mb-1"
+                  >Your Message</label
+                >
+                <textarea
+                  rows="4"
+                  required
+                  placeholder="Detail your question, vendor stall location, or collaboration request..."
+                  class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600 resize-none"
+                ></textarea>
+              </div>
 
-          <div id="sellerSuccess" class="seller-form success" hidden>
-            <div class="success-icon">✓</div>
-            <h2>Thanks, <span id="successName"></span>!</h2>
-            <p>We received your registration. Buyers will be able to find your deals once you're listed.</p>
-            <p class="hint" id="successNote"></p>
-            <button class="btn" data-page="products">See today's deals</button>
-            <button class="btn btn-outline" id="addAnother" type="button">Add another seller</button>
+              <button
+                type="submit"
+                class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md"
+              >
+                <span class="material-symbols-outlined text-base">send</span>
+                <span>Submit Inquiry</span>
+              </button>
+            </form>
+
+            <!-- Success Alert Placeholder -->
+            <div
+              id="form-success"
+              class="hidden mt-4 p-4 rounded-xl bg-green-100 border border-green-300 text-green-900 text-xs font-semibold flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-green-700"
+                >check_circle</span
+              >
+              <span
+                >Thank you! Your message has been sent to the PreServa
+                team.</span
+              >
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ABOUT -->
-    <section id="about" class="page">
-      <div class="page-heading">
-        <h1 tabindex="-1">About PRESERVA</h1>
-        <p>Connecting local produce sellers with people who want affordable food.</p>
+    <!-- ==================== FOOTER ==================== -->
+   <footer class="bg-white border-t border-gray-200 py-12 px-6">
+  <div class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-6">
+    <!-- Centered Brand / Logo / Copyright -->
+    <div class="flex flex-col items-center gap-2">
+      <img 
+        src="onlylogo.png" 
+        alt="PreServa Logo" 
+        class="w-10 h-10 object-contain" 
+        onerror="this.onerror=null; this.src='https://placehold.co/60x60/14532d/white?text=P';" 
+      />
+      <div>
+        <p class="text-base font-black text-brand-900">PreServa</p>
+        <p class="text-xs text-gray-500 mt-1 max-w-sm sm:max-w-md">
+          © 2026 PreServa. Connecting vendors, buyers, and communities for zero food waste.
+        </p>
       </div>
+    </div>
 
-      <div class="about-wrap">
-        <div class="about-intro">
-          <div>
-            <h2>Good food deserves a buyer.</h2>
-            <p>
-              Every day, fresh fruits and vegetables go unsold in local markets.
-              PRESERVA helps sellers in Panabo City find buyers for that produce
-              before it spoils, at a price that works for everyone.
-            </p>
-            <button class="btn" data-page="products">See today's deals</button>
-          </div>
-          <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=900&q=80"
-               alt="A market stall with fresh vegetables">
+    <!-- Centered Footer Links -->
+    <div class="flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-gray-600">
+      <a href="#home" class="hover:text-brand-900 transition-colors">Home</a>
+      <a href="#prototype" class="hover:text-brand-900 transition-colors">Our Prototype</a>
+      <a href="#about" class="hover:text-brand-900 transition-colors">About Us</a>
+      <a href="#contact" class="hover:text-brand-900 transition-colors">Contact Us</a>
+      <a href="#" class="hover:text-brand-900 transition-colors">Privacy Policy</a>
+      <a href="#" class="hover:text-brand-900 transition-colors">Terms</a>
+    </div>
+  </div>
+</footer>
+
+        
+
+    <!-- ==================== JAVASCRIPT ANIMATIONS & INTERACTIONS ==================== -->
+    <script>
+      // 1. RENDER 23 PROTOTYPE SLOTS (Clean Card Architecture: Screen Index, Icon, Title)
+      const prototypeGrid = document.getElementById("prototype-grid");
+      const totalSlots = 23;
+
+      function getCategory(num) {
+        if (num <= 8) return "vendor";
+        if (num <= 16) return "buyer";
+        return "engine";
+      }
+
+      for (let i = 1; i <= totalSlots; i++) {
+        const slotNum = String(i).padStart(2, "0");
+        const cat = getCategory(i);
+
+        const card = document.createElement("div");
+        card.className = `prototype-card reveal p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center text-center min-h-[220px] group cursor-pointer`;
+        card.setAttribute("data-category", cat);
+        card.style.transitionDelay = `${(i % 4) * 60}ms`;
+
+        card.innerHTML = `
+        <div class="w-full flex justify-between items-center mb-4">
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-brand-100 text-brand-800">
+            Screen ${slotNum}
+          </span>
+          <span class="material-symbols-outlined text-gray-300 text-lg group-hover:text-brand-600 transition-colors">
+            crop_original
+          </span>
         </div>
-
-        <div class="about-duo">
-          <article class="about-box problem">
-            <div class="about-icon">🥀</div>
-            <h3>The problem</h3>
-            <p>Farmers and produce sellers often can't sell their remaining fruits and vegetables before they spoil. That means wasted food and lost income.</p>
-          </article>
-          <article class="about-box solution">
-            <div class="about-icon">🌱</div>
-            <h3>Our solution</h3>
-            <p>PRESERVA lets sellers list produce at a rescue price, so buyers can find it and visit the stall before it goes bad.</p>
-          </article>
+        <div class="w-16 h-16 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-400 group-hover:border-brand-500 group-hover:bg-brand-50/50 group-hover:text-brand-700 transition-all duration-300 mb-4">
+          <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
         </div>
+        <h3 class="text-sm font-bold text-brand-900">Prototype Screen ${i}</h3>
+      `;
 
-        <blockquote class="about-mission">
-          <h3>Our mission</h3>
-          <p>Support local sellers, make produce easier to find, and encourage responsible use of food.</p>
-        </blockquote>
+        prototypeGrid.appendChild(card);
+      }
 
-        <div class="about-duo">
-          <article class="about-box">
-            <div class="about-icon">📍</div>
-            <h3>Where we are</h3>
-            <p>Panabo City, Davao del Norte, Philippines</p>
-            <a class="btn btn-outline" target="_blank" rel="noopener noreferrer"
-               href="https://www.google.com/maps/search/?api=1&query=Panabo+City+Davao+del+Norte">Open in Maps</a>
-          </article>
-          <article class="about-box">
-            <div class="about-icon">🌍</div>
-            <h3>Our goal</h3>
-            <p>Contribute to UN Sustainable Development Goal 12: Responsible Consumption and Production.</p>
-          </article>
-        </div>
+      // 2. FILTER TABS FUNCTIONALITY
+      function filterSlots(category) {
+        // Update tab active states
+        document.querySelectorAll(".proto-tab").forEach((tab) => {
+          if (tab.getAttribute("data-category") === category) {
+            tab.classList.add("bg-brand-900", "text-white");
+            tab.classList.remove("bg-white", "text-gray-700", "border");
+          } else {
+            tab.classList.remove("bg-brand-900", "text-white");
+            tab.classList.add("bg-white", "text-gray-700", "border");
+          }
+        });
 
-        <div class="about-cta">
-          <h2>Ready to help?</h2>
-          <p>Find a deal today, or list your own produce.</p>
-          <button class="btn btn-light" data-page="products">See today's deals</button>
-          <button class="btn btn-light" data-page="seller">Become a seller</button>
-        </div>
-      </div>
-    </section>
-  </main>
+        // Filter cards
+        document.querySelectorAll(".prototype-card").forEach((card) => {
+          const cardCat = card.getAttribute("data-category");
+          if (category === "all" || cardCat === category) {
+            card.classList.remove("hidden");
+            setTimeout(() => card.classList.add("active"), 20);
+          } else {
+            card.classList.add("hidden");
+            card.classList.remove("active");
+          }
+        });
+      }
 
-  <footer>
-    <h3>PRESERVA</h3>
-    <p>Supporting local sellers. Reducing food waste.</p>
-    <p>Panabo City, Davao del Norte</p>
-    <p class="footer-links">
-      <a href="#home" data-page="home">Home</a>
-      <a href="#products" data-page="products">Rescue Deals</a>
-      <a href="#seller" data-page="seller">Become a Seller</a>
-      <a href="#about" data-page="about">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="login.html">Log in</a>
-      <a href="register.html">Sign up</a>
-    </p>
-  </footer>
+      // 3. SCROLL REVEAL ANIMATIONS (IntersectionObserver)
+      const observerOptions = {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.12,
+      };
 
-  <script src="script.js"></script>
-  <script src="auth.js"></script>
-</body>
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+          }
+        });
+      }, observerOptions);
+
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => revealObserver.observe(el));
+
+      // 4. SCROLLSPY NAVIGATION HIGHLIGHTER
+      const sections = document.querySelectorAll("section[id]");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      window.addEventListener("scroll", () => {
+        let current = "";
+        const scrollY = window.pageYOffset;
+
+        sections.forEach((section) => {
+          const sectionHeight = section.offsetHeight;
+          const sectionTop = section.offsetTop - 120;
+          if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+            current = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach((link) => {
+          link.classList.remove(
+            "text-brand-900",
+            "border-b-2",
+            "border-brand-900",
+            "font-semibold",
+          );
+          link.classList.add("text-gray-600", "font-medium");
+          if (link.getAttribute("href") === `#${current}`) {
+            link.classList.add(
+              "text-brand-900",
+              "border-b-2",
+              "border-brand-900",
+              "font-semibold",
+            );
+            link.classList.remove("text-gray-600");
+          }
+        });
+      });
+
+      // 5. FORM SUBMISSION FEEDBACK
+      function handleFormSubmit(e) {
+        e.preventDefault();
+        const form = document.getElementById("contact-form");
+        const success = document.getElementById("form-success");
+        form.reset();
+        success.classList.remove("hidden");
+        setTimeout(() => success.classList.add("hidden"), 5000);
+      }
+    </script>
+  </body>
 </html>
