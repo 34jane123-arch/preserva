@@ -1,787 +1,1401 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PreServa — Sell Fresh. Save More. Waste Less.</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PreServa — Sell Fresh. Save More. Waste Less.</title>
 
-  <!-- Google Fonts: Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Material Symbols Outlined -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!-- Material Symbols Outlined -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Three.js CDN for Interactive 3D Phone -->
-  <script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js CDN for Interactive 3D Phone -->
+    <script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', "sans-serif"],
+            },
+            colors: {
+              brand: {
+                50: "#f2fbf4",
+                100: "#e1f7e7",
+                200: "#c5eed0",
+                300: "#98dfab",
+                400: "#64c87f",
+                500: "#3baa5c",
+                600: "#2c8b47",
+                700: "#246e3a",
+                800: "#205731",
+                900: "#14532d",
+                950: "#0c2e18",
+              },
+            },
           },
-          colors: {
-            brand: {
-              50: '#f2fbf4',
-              100: '#e1f7e7',
-              200: '#c5eed0',
-              300: '#98dfab',
-              400: '#64c87f',
-              500: '#3baa5c',
-              600: '#2c8b47',
-              700: '#246e3a',
-              800: '#205731',
-              900: '#14532d',
-              950: '#0c2e18',
-            }
-          }
-        }
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8faf5;
+        color: #1a2e22;
+        overflow-x: hidden;
       }
-    }
-  </script>
 
-  <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f8faf5;
-      color: #1a2e22;
-      overflow-x: hidden;
-    }
+      .reveal {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+          opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+      }
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
-    }
-    .reveal.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
+      .clean-phone-img {
+        mix-blend-mode: multiply;
+        filter: contrast(102%) brightness(99%);
+        object-position: center top;
+      }
 
-    .clean-phone-img {
-      mix-blend-mode: multiply;
-      filter: contrast(102%) brightness(99%);
-      object-position: center top;
-    }
+      #threejs-phone-container {
+        cursor: grab;
+      }
+      #threejs-phone-container:active {
+        cursor: grabbing;
+      }
 
-    #threejs-phone-container {
-      cursor: grab;
-    }
-    #threejs-phone-container:active {
-      cursor: grabbing;
-    }
+      /* ==================== COOL GLOW & INTERACTIVE ANIMATIONS ==================== */
 
-    /* ==================== COOL GLOW & INTERACTIVE ANIMATIONS ==================== */
-    
-    /* Navigation Link Glow & Transition */
-    .nav-glow-item {
-      position: relative;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 9999px;
-      padding: 6px 14px;
-    }
-    .nav-glow-item:hover {
-      color: #14532d;
-      background: rgba(59, 170, 92, 0.12);
-      box-shadow: 0 0 16px rgba(59, 170, 92, 0.25);
-      transform: translateY(-1px);
-    }
-    .nav-glow-item.active-glow {
-      color: #14532d;
-      font-weight: 700;
-      background: rgba(59, 170, 92, 0.18);
-      box-shadow: 0 0 18px rgba(59, 170, 92, 0.35), inset 0 0 0 1px rgba(36, 110, 58, 0.3);
-    }
-    .nav-glow-item.active-glow::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      left: 20%;
-      right: 20%;
-      height: 2.5px;
-      background: #2c8b47;
-      border-radius: 9999px;
-      box-shadow: 0 0 8px #3baa5c;
-    }
+      /* Navigation Link Glow & Transition */
+      .nav-glow-item {
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 9999px;
+        padding: 6px 14px;
+      }
+      .nav-glow-item:hover {
+        color: #14532d;
+        background: rgba(59, 170, 92, 0.12);
+        box-shadow: 0 0 16px rgba(59, 170, 92, 0.25);
+        transform: translateY(-1px);
+      }
+      .nav-glow-item.active-glow {
+        color: #14532d;
+        font-weight: 700;
+        background: rgba(59, 170, 92, 0.18);
+        box-shadow:
+          0 0 18px rgba(59, 170, 92, 0.35),
+          inset 0 0 0 1px rgba(36, 110, 58, 0.3);
+      }
+      .nav-glow-item.active-glow::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: 20%;
+        right: 20%;
+        height: 2.5px;
+        background: #2c8b47;
+        border-radius: 9999px;
+        box-shadow: 0 0 8px #3baa5c;
+      }
 
-    /* Glowing Textfields & Inputs */
-    .glowing-field {
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      background: #ffffff;
-      border: 1.5px solid #e5e7eb;
-    }
-    .glowing-field:hover {
-      border-color: #98dfab;
-      box-shadow: 0 0 12px rgba(59, 170, 92, 0.15);
-    }
-    .glowing-field:focus {
-      outline: none;
-      border-color: #2c8b47;
-      background: #fdfefe;
-      box-shadow: 0 0 0 4px rgba(59, 170, 92, 0.2), 0 10px 24px -6px rgba(20, 83, 45, 0.18);
-      transform: translateY(-1px);
-    }
+      /* Glowing Textfields & Inputs */
+      .glowing-field {
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        background: #ffffff;
+        border: 1.5px solid #e5e7eb;
+      }
+      .glowing-field:hover {
+        border-color: #98dfab;
+        box-shadow: 0 0 12px rgba(59, 170, 92, 0.15);
+      }
+      .glowing-field:focus {
+        outline: none;
+        border-color: #2c8b47;
+        background: #fdfefe;
+        box-shadow:
+          0 0 0 4px rgba(59, 170, 92, 0.2),
+          0 10px 24px -6px rgba(20, 83, 45, 0.18);
+        transform: translateY(-1px);
+      }
 
-    /* Floating Field Label Animation */
-    .field-wrapper:focus-within label {
-      color: #14532d;
-      text-shadow: 0 0 8px rgba(59, 170, 92, 0.2);
-    }
-  </style>
-</head>
-<body class="bg-[#f8faf5] text-[#1e2a22] antialiased selection:bg-brand-200 selection:text-brand-900">
-
-  <!-- ==================== HEADER & NAVBAR ==================== -->
-  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#f8faf5]/90 backdrop-blur-md border-b border-brand-900/10 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="#home" class="flex items-center gap-3 group">
-        <img src="onlylogo.png" alt="PreServa Logo" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_10px_rgba(59,170,92,0.4)]" onerror="this.onerror=null; this.src='https://placehold.co/80x80/14532d/white?text=P';" />
-        <div class="flex flex-col">
-          <span class="text-xl font-black tracking-tight text-brand-900 leading-none">PRESERVA</span>
-          <span class="text-[11px] font-semibold tracking-wider text-brand-600 uppercase">Agri-Tech Platform</span>
-        </div>
-      </a>
-
-      <!-- Glowing Navigation Menu -->
-      <nav id="main-nav" class="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-white/70 border border-brand-900/10 backdrop-blur-md shadow-sm">
-        <a href="#home" class="nav-glow-item text-xs font-semibold text-gray-700 active-glow">Home</a>
-        <a href="#prototype" class="nav-glow-item text-xs font-medium text-gray-700">Our Prototype</a>
-        <a href="#about" class="nav-glow-item text-xs font-medium text-gray-700">About Us</a>
-        <a href="#contact" class="nav-glow-item text-xs font-medium text-gray-700">Contact Us</a>
-      </nav>
-
-      <div class="flex items-center gap-4">
-        <a href="#prototype" class="px-5 py-2.5 rounded-full bg-brand-900 text-white text-xs font-bold hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.4)] active:scale-95 transition-all shadow-sm shadow-brand-900/20 flex items-center gap-1.5">
-          <span>Explore Prototype</span>
-          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      /* Floating Field Label Animation */
+      .field-wrapper:focus-within label {
+        color: #14532d;
+        text-shadow: 0 0 8px rgba(59, 170, 92, 0.2);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#f8faf5] text-[#1e2a22] antialiased selection:bg-brand-200 selection:text-brand-900"
+  >
+    <!-- ==================== HEADER & NAVBAR ==================== -->
+    <header
+      class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#f8faf5]/90 backdrop-blur-md border-b border-brand-900/10 shadow-sm"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between"
+      >
+        <a href="#home" class="flex items-center gap-3 group">
+          <img
+            src="onlylogo.png"
+            alt="PreServa Logo"
+            class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_10px_rgba(59,170,92,0.4)]"
+            onerror="
+              this.onerror = null;
+              this.src = 'https://placehold.co/80x80/14532d/white?text=P';
+            "
+          />
+          <div class="flex flex-col">
+            <span
+              class="text-xl font-black tracking-tight text-brand-900 leading-none"
+              >PRESERVA</span
+            >
+            <span
+              class="text-[11px] font-semibold tracking-wider text-brand-600 uppercase"
+              >Agri-Tech Platform</span
+            >
+          </div>
         </a>
-      </div>
-    </div>
-  </header>
 
-  <!-- ==================== HOME / HERO SECTION ==================== -->
-  <section id="home" class="pt-32 pb-20 px-6 max-w-7xl mx-auto scroll-mt-24">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-      <div class="lg:col-span-7 space-y-6 reveal">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 border border-brand-300 text-brand-800 text-xs font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(59,170,92,0.15)]">
-          <span class="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
-          Agricultural Waste Rescue System
-        </div>
+        <!-- Glowing Navigation Menu -->
+        <nav
+          id="main-nav"
+          class="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-white/70 border border-brand-900/10 backdrop-blur-md shadow-sm"
+        >
+          <a
+            href="#home"
+            class="nav-glow-item text-xs font-semibold text-gray-700 active-glow"
+            >Home</a
+          >
+          <a
+            href="#prototype"
+            class="nav-glow-item text-xs font-medium text-gray-700"
+            >Our Prototype</a
+          >
+          <a
+            href="#about"
+            class="nav-glow-item text-xs font-medium text-gray-700"
+            >About Us</a
+          >
+          <a
+            href="#contact"
+            class="nav-glow-item text-xs font-medium text-gray-700"
+            >Contact Us</a
+          >
+        </nav>
 
-        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-brand-900 leading-[1.1]">
-          Sell Fresh. <br />
-          Save More. <br />
-          <span class="text-brand-600 drop-shadow-[0_0_15px_rgba(59,170,92,0.2)]">Waste Less.</span>
-        </h1>
-
-        <p class="text-lg text-gray-700 max-w-xl leading-relaxed">
-          An agricultural technology platform designed to help local market vendors reduce food waste while making fresh and affordable produce accessible to the community.
-        </p>
-
-        <div class="flex flex-wrap items-center gap-4 pt-2">
-          <a href="#prototype" class="px-7 py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 text-white font-semibold text-base transition-all shadow-md shadow-brand-900/20 hover:shadow-[0_0_22px_rgba(20,83,45,0.35)] active:scale-95 flex items-center gap-2">
-            <span class="material-symbols-outlined">explore</span>
+        <div class="flex items-center gap-4">
+          <a
+            href="#prototype"
+            class="px-5 py-2.5 rounded-full bg-brand-900 text-white text-xs font-bold hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.4)] active:scale-95 transition-all shadow-sm shadow-brand-900/20 flex items-center gap-1.5"
+          >
             <span>Explore Prototype</span>
-          </a>
-          <a href="#about" class="px-7 py-3.5 rounded-full bg-white hover:bg-gray-50 text-brand-900 font-semibold text-base border border-gray-200 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(59,170,92,0.15)] active:scale-95 flex items-center gap-2">
-            <span>Learn More About Us</span>
-            <span class="material-symbols-outlined">arrow_downward</span>
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
           </a>
         </div>
-
-        <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
-          <div>
-            <div class="text-2xl font-black text-brand-900">100%</div>
-            <div class="text-xs font-semibold text-gray-500 uppercase">Consumable Produce</div>
-          </div>
-          <div>
-            <div class="text-2xl font-black text-brand-900">Zero</div>
-            <div class="text-xs font-semibold text-gray-500 uppercase">Upfront Vendor Fee</div>
-          </div>
-          <div>
-            <div class="text-2xl font-black text-brand-900">Hyperlocal</div>
-            <div class="text-xs font-semibold text-gray-500 uppercase">Market Recovery</div>
-          </div>
-        </div>
       </div>
+    </header>
 
-      <div class="lg:col-span-5 relative reveal">
-        <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100 group">
-          <img src="home.jpg" alt="Panabo Public Market Vendor Stalls" class="w-full h-[440px] object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80';" />
-
-          <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-brand-100 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-800 flex items-center justify-center font-bold">
-                <span class="material-symbols-outlined text-xl">storefront</span>
-              </div>
-              <div>
-                <p class="text-xs font-bold text-brand-900">Public Market Vendor Stalls</p>
-                <p class="text-[11px] text-gray-500 font-medium">Live Fresh Produce Batching Active</p>
-              </div>
-            </div>
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-800">
-              Active Hub
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3 Core Highlight Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
-          <span class="material-symbols-outlined text-2xl">percent</span>
-        </div>
-        <h3 class="text-lg font-bold text-brand-900 mb-2">Freshness-Based Discounts</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          Helping vendors recover costs through dynamic markdowns before fruits and vegetables reach their spoilage window.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
-          <span class="material-symbols-outlined text-2xl">receipt_long</span>
-        </div>
-        <h3 class="text-lg font-bold text-brand-900 mb-2">Product Reservations</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          Connecting vendors directly with budget-conscious household buyers and local food businesses seeking guaranteed daily fresh crates.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
-          <span class="material-symbols-outlined text-2xl">recycling</span>
-        </div>
-        <h3 class="text-lg font-bold text-brand-900 mb-2">Hyperlocal Food Rescue</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          Ensuring safe, consumable, and imperfect produce is systematically salvaged every market morning and late afternoon cycle.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== OUR PROTOTYPE SECTION (3D PHONE + 25 SCREEN BLUEPRINT) ==================== -->
-  <section id="prototype" class="py-24 bg-[#f2f5ee] border-y border-brand-900/10 scroll-mt-20">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
-          <span class="material-symbols-outlined text-sm">devices</span>
-          PreServa Architecture & Design Blueprint
-        </div>
-        <h2 class="text-3xl sm:text-5xl font-extrabold text-brand-900 tracking-tight">Our Prototype</h2>
-        <p class="text-gray-600 mt-3 text-base">
-          Interactive System Showcase & Mobile Application Interface. Below is the complete 25-screen workflow designed for stall dispatch, buyer reservations, dynamic pricing, and inventory monitoring.
-        </p>
-      </div>
-
-      <!-- 3D Smartphone Frame (Front App Screen & Clean Rear Chassis) -->
-      <div class="bg-white rounded-3xl p-8 border border-gray-200 shadow-md mb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center reveal hover:shadow-[0_0_30px_rgba(59,170,92,0.15)] transition-shadow duration-500">
-        <div class="lg:col-span-7 relative h-[520px] rounded-2xl bg-gradient-to-b from-[#eaf4ec] to-[#f4f9f4] flex items-center justify-center overflow-hidden border border-brand-100">
-          <div id="threejs-phone-container" class="w-full h-full"></div>
-
-          <!-- Interaction Hint -->
-          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-brand-900/80 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1.5 shadow-md pointer-events-none">
-            <span class="material-symbols-outlined text-sm">touch_app</span>
-            <span>Click & Drag device to rotate 360°</span>
-          </div>
-        </div>
-
-        <div class="lg:col-span-5 space-y-5">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold uppercase tracking-wider">
-            <span class="material-symbols-outlined text-sm">3d_rotation</span>
-            Interactive 3D Hardware & UI Showcase
+    <!-- ==================== HOME / HERO SECTION ==================== -->
+    <section id="home" class="pt-32 pb-20 px-6 max-w-7xl mx-auto scroll-mt-24">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-7 space-y-6 reveal">
+          <div
+            class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 border border-brand-300 text-brand-800 text-xs font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(59,170,92,0.15)]"
+          >
+            <span class="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
+            Agricultural Waste Rescue System
           </div>
 
-          <h3 class="text-3xl font-extrabold text-brand-900">Experience PreServa in 3D</h3>
+          <h1
+            class="text-4xl sm:text-6xl font-extrabold tracking-tight text-brand-900 leading-[1.1]"
+          >
+            Sell Fresh. <br />
+            Save More. <br />
+            <span
+              class="text-brand-600 drop-shadow-[0_0_15px_rgba(59,170,92,0.2)]"
+              >Waste Less.</span
+            >
+          </h1>
 
-          <p class="text-sm text-gray-600 leading-relaxed">
-            Interact with the PreServa mobile application in real-time 3D space. Click and drag to inspect our intuitive vendor & buyer interface running directly on device hardware with a clean metallic rear chassis.
+          <p class="text-lg text-gray-700 max-w-xl leading-relaxed">
+            An agricultural technology platform designed to help local market
+            vendors reduce food waste while making fresh and affordable produce
+            accessible to the community.
           </p>
 
-          <div class="space-y-2 pt-2">
-            <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
-              <span>Auto-Rotating Ambient Motion with Physics Inertia</span>
-            </div>
-            <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
-              <span>Click & Drag to Orbit 360° Horizontally & Vertically</span>
-            </div>
-            <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
-              <span>Clean Forest Green Metallic Rear Panel</span>
-            </div>
-          </div>
-
-          <div class="pt-4 flex flex-wrap items-center gap-3">
-            <a href="#prototype-grid" class="px-6 py-3 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.4)] text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
-              <span class="material-symbols-outlined text-sm">schema</span>
-              <span>Inspect All Prototype Screens</span>
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a
+              href="#prototype"
+              class="px-7 py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 text-white font-semibold text-base transition-all shadow-md shadow-brand-900/20 hover:shadow-[0_0_22px_rgba(20,83,45,0.35)] active:scale-95 flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined">explore</span>
+              <span>Explore Prototype</span>
+            </a>
+            <a
+              href="#about"
+              class="px-7 py-3.5 rounded-full bg-white hover:bg-gray-50 text-brand-900 font-semibold text-base border border-gray-200 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(59,170,92,0.15)] active:scale-95 flex items-center gap-2"
+            >
+              <span>Learn More About Us</span>
+              <span class="material-symbols-outlined">arrow_downward</span>
             </a>
           </div>
-        </div>
-      </div>
 
-      <!-- 25 Real Prototype Cards Grid -->
-      <div id="prototype-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-    </div>
-  </section>
-
-  <!-- ==================== ABOUT US SECTION ==================== -->
-  <section id="about" class="py-24 px-6 max-w-7xl mx-auto scroll-mt-20">
-    <div class="text-center max-w-3xl mx-auto mb-16 reveal">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-100 border border-brand-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
-        <span class="material-symbols-outlined text-sm">eco</span>
-        About the PreServa Vision
-      </div>
-      <h2 class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight">PRESERVA — Sell Fresh. Save More. Waste Less.</h2>
-      <div class="mt-6 space-y-4 text-gray-700 text-base leading-relaxed text-justify sm:text-center">
-        <p>
-          PRESERVA is an agricultural technology platform designed to help local market vendors reduce food waste while making fresh and affordable produce accessible to the community. It connects vendors with local buyers and businesses through freshness-based discounts, imperfect but safe produce listings, and product reservations.
-        </p>
-        <p>
-          Through PRESERVA, we aim to give unsold produce another opportunity to be sold instead of going to waste, helping vendors recover their costs and allowing buyers to enjoy affordable products.
-        </p>
-      </div>
-    </div>
-
-    <!-- Goal, Mission, Vision Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-      <div class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
-          <span class="material-symbols-outlined text-2xl">track_changes</span>
-        </div>
-        <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Target Milestone</span>
-        <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Goal</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          To reduce fruit and vegetable spoilage among local market vendors by providing an accessible platform where unsold and surplus produce can be sold at discounted prices before they spoil.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
-          <span class="material-symbols-outlined text-2xl">flag</span>
-        </div>
-        <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Our Mandate</span>
-        <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Mission</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          To connect local vendors, household buyers, and businesses through a convenient and affordable digital platform that promotes responsible purchasing, reduces food waste, and supports livelihoods.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
-          <span class="material-symbols-outlined text-2xl">visibility</span>
-        </div>
-        <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Long-Term Future</span>
-        <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Vision</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          To become a trusted agricultural technology platform that helps build a community where no good produce goes to waste, local vendors thrive, and everyone has access to affordable quality food.
-        </p>
-      </div>
-    </div>
-
-    <!-- Core Values -->
-    <div class="reveal">
-      <div class="text-center mb-10">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Guiding Principles</span>
-        <h3 class="text-3xl font-extrabold text-brand-900">Our Core Values</h3>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
-          <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">01</div>
-          <h4 class="text-lg font-bold text-brand-900 mb-1">Sustainability</h4>
-          <p class="text-xs text-gray-600">Promoting responsible consumption and reducing food waste.</p>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
-          <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">02</div>
-          <h4 class="text-lg font-bold text-brand-900 mb-1">Community Support</h4>
-          <p class="text-xs text-gray-600">Helping local vendors and buyers benefit from affordable produce.</p>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
-          <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">03</div>
-          <h4 class="text-lg font-bold text-brand-900 mb-1">Affordability</h4>
-          <p class="text-xs text-gray-600">Making quality and safe produce accessible at reasonable prices.</p>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
-          <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">04</div>
-          <h4 class="text-lg font-bold text-brand-900 mb-1">Responsibility</h4>
-          <p class="text-xs text-gray-600">Encouraging people to value food and avoid unnecessary waste.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== CONTACT US & TEAM SECTION ==================== -->
-  <section id="contact" class="py-24 bg-[#f2f5ee] border-t border-brand-900/10 scroll-mt-20">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
-          <span class="material-symbols-outlined text-sm">support_agent</span>
-          Get in Touch with PreServa
-        </div>
-        <h2 class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight">Team & Contact</h2>
-        <p class="text-gray-600 mt-3 text-base">
-          Have questions about PreServa or want to connect with our team? Feel free to reach out to us through our social media accounts or contact numbers.
-        </p>
-      </div>
-
-      <!-- 3 Team Profiles (Christian Francisco = CEO, M Jayross Cruspero = COO, Jhun Rey Flores = CMO) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-        
-        <!-- Christian Francisco (CEO) -->
-        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
-          <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
-            <img src="Christian.png" alt="Christian Francisco" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/14532d/white?text=CF';" />
-          </div>
-          <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">CEO</span>
-          <h3 class="text-xl font-bold text-brand-900">Christian Francisco</h3>
-          <p class="text-xs font-semibold text-brand-600 mb-2">Chief Executive Officer (CEO)</p>
-          <p class="text-xs text-gray-500 mb-6">Spearheading organizational vision, strategic public market vendor partnerships, stakeholder alignment, and ecosystem execution.</p>
-
-          <div class="w-full space-y-2 mt-auto">
-            <a href="https://www.facebook.com/peppertian" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';" />
-                <span>peppertian</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
-            </a>
-            <a href="tel:09637411495" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/724/724664.png';" />
-                <span>09637411495</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">call</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- M Jayross Cruspero (COO) -->
-        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
-          <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
-            <img src="MJ.png" alt="M Jayross Cruspero" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/14532d/white?text=MJ';" />
-          </div>
-          <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">COO</span>
-          <h3 class="text-xl font-bold text-brand-900">M Jayross Cruspero</h3>
-          <p class="text-xs font-semibold text-brand-600 mb-2">Chief Operating Officer (COO)</p>
-          <p class="text-xs text-gray-500 mb-6">Directing technical operations, live stall batch logic, market waste mapping algorithms, and platform workflow execution.</p>
-
-          <div class="w-full space-y-2 mt-auto">
-            <a href="https://www.facebook.com/mjay.cruspero.7/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';" />
-                <span>mjay.cruspero.7</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
-            </a>
-            <a href="tel:09945493313" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/724/724664.png';" />
-                <span>09945493313</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">call</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Jhun Rey Flores (CMO) -->
-        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
-          <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
-            <img src="JR.jpg" alt="Jhun Rey Flores" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/14532d/white?text=JR';" />
-          </div>
-          <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">CMO</span>
-          <h3 class="text-xl font-bold text-brand-900">Jhun Rey Flores</h3>
-          <p class="text-xs font-semibold text-brand-600 mb-2">Chief Marketing Officer (CMO)</p>
-          <p class="text-xs text-gray-500 mb-6">Leading vendor community outreach, public awareness campaigns, brand engagement, and market adoption growth.</p>
-
-          <div class="w-full space-y-2 mt-auto">
-            <a href="https://www.facebook.com/ewpoke" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';" />
-                <span>ewpoke</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
-            </a>
-            <a href="tel:09631104216" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/724/724664.png';" />
-                <span>09631104216</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">call</span>
-            </a>
-          </div>
-        </div>
-
-      </div>
-
-        <!-- Jhun Rey Flores -->
-        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
-          <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
-            <img src="JR.jpg" alt="Jhun Rey Flores" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/14532d/white?text=JR';" />
-          </div>
-          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">Project Lead</span>
-          <h3 class="text-xl font-bold text-brand-900">Jhun Rey Flores</h3>
-          <p class="text-xs font-semibold text-brand-600 mb-2">Mobile Interface Designer & QA</p>
-          <p class="text-xs text-gray-500 mb-6">Crafting accessible, high-contrast mobile interaction flows tailored for active outdoor market environments.</p>
-
-          <div class="w-full space-y-2 mt-auto">
-            <a href="https://www.facebook.com/ewpoke" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';" />
-                <span>ewpoke</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
-            </a>
-            <a href="tel:09631104216" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/724/724664.png';" />
-                <span>09631104216</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">call</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Map & Form (Pantay & Equal Height) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-        
-        <!-- Left Card: Physical Institution & Research Lab (Map) -->
-        <div class="lg:col-span-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm reveal flex flex-col justify-between h-full">
-          <div>
-            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2">
-              <span class="material-symbols-outlined text-sm">location_on</span>
-              Physical Institution & Research Lab
-            </div>
-            <h3 class="text-2xl font-black text-brand-900 mb-2">You Can Find Us Here</h3>
-            <p class="text-xs text-gray-600 mb-4">
-              PreServa is a student startup project developed by BSIS students of Davao del Norte State College.
-            </p>
-
-            <div class="p-3.5 rounded-2xl bg-brand-50 border border-brand-200 mb-4 text-xs font-medium text-brand-900">
-              <strong>Davao del Norte State College (DNSC)</strong><br />
-              New Visayas, Panabo City, Davao del Norte, Philippines 8105
-            </div>
-          </div>
-
-          <!-- Map Container -->
-          <div class="w-full h-64 lg:h-[270px] rounded-2xl overflow-hidden border border-gray-200 my-4 bg-gray-100 flex-grow shadow-inner">
-            <iframe 
-              src="https://maps.google.com/maps?q=Davao%20del%20Norte%20State%20College,%20Panabo%20City&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-              class="w-full h-full border-0" 
-              allowfullscreen="" 
-              loading="lazy">
-            </iframe>
-          </div>
-
-          <a href="https://www.google.com/maps/dir/?api=1&destination=Davao+del+Norte+State+College,+Panabo+City,+Davao+del+Norte,+Philippines" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.35)] text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm mt-auto">
-            <span class="material-symbols-outlined text-sm">navigation</span>
-            <span>Get Directions to DNSC</span>
-          </a>
-        </div>
-
-        <!-- Right Card: Direct Dispatch (Form nga may Glowing Textfields) -->
-        <div class="lg:col-span-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm reveal flex flex-col justify-between h-full">
-          <div>
-            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2">
-              <span class="material-symbols-outlined text-sm">send</span>
-              Direct Dispatch
-            </div>
-            <h3 class="text-2xl font-black text-brand-900 mb-2">Send PreServa a Message</h3>
-            <p class="text-xs text-gray-600 mb-6">
-              Are you a market vendor, commercial enterprise, or institutional reviewer? Leave us a direct inquiry below.
-            </p>
-          </div>
-
-          <!-- Form nga may Interactive Glowing Fields -->
-          <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4 flex flex-col flex-grow justify-between">
-            <div class="space-y-4">
-              
-              <!-- Full Name Field with Glowing Animation -->
-              <div class="field-wrapper">
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-sm text-brand-600">person</span>
-                  <span>Full Name</span>
-                </label>
-                <input 
-                  type="text" 
-                  required 
-                  placeholder="e.g. Maria Santos" 
-                  class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm" 
-                />
+          <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
+            <div>
+              <div class="text-2xl font-black text-brand-900">100%</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">
+                Consumable Produce
               </div>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-brand-900">Zero</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">
+                Upfront Vendor Fee
+              </div>
+            </div>
+            <div>
+              <div class="text-2xl font-black text-brand-900">Hyperlocal</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">
+                Market Recovery
+              </div>
+            </div>
+          </div>
+        </div>
 
-              <!-- Email & Subject with Glowing Animation -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="lg:col-span-5 relative reveal">
+          <div
+            class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100 group"
+          >
+            <img
+              src="home.jpg"
+              alt="Panabo Public Market Vendor Stalls"
+              class="w-full h-[440px] object-cover transition-transform duration-700 group-hover:scale-105"
+              onerror="
+                this.onerror = null;
+                this.src =
+                  'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80';
+              "
+            />
+
+            <div
+              class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-brand-100 flex items-center justify-between"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-full bg-brand-100 text-brand-800 flex items-center justify-center font-bold"
+                >
+                  <span class="material-symbols-outlined text-xl"
+                    >storefront</span
+                  >
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-brand-900">
+                    Public Market Vendor Stalls
+                  </p>
+                  <p class="text-[11px] text-gray-500 font-medium">
+                    Live Fresh Produce Batching Active
+                  </p>
+                </div>
+              </div>
+              <span
+                class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-800"
+              >
+                Active Hub
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Core Highlight Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+        <div
+          class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal"
+        >
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4"
+          >
+            <span class="material-symbols-outlined text-2xl">percent</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">
+            Freshness-Based Discounts
+          </h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Helping vendors recover costs through dynamic markdowns before
+            fruits and vegetables reach their spoilage window.
+          </p>
+        </div>
+
+        <div
+          class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal"
+        >
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4"
+          >
+            <span class="material-symbols-outlined text-2xl">receipt_long</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">
+            Product Reservations
+          </h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Connecting vendors directly with budget-conscious household buyers
+            and local food businesses seeking guaranteed daily fresh crates.
+          </p>
+        </div>
+
+        <div
+          class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal"
+        >
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4"
+          >
+            <span class="material-symbols-outlined text-2xl">recycling</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">
+            Hyperlocal Food Rescue
+          </h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Ensuring safe, consumable, and imperfect produce is systematically
+            salvaged every market morning and late afternoon cycle.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== OUR PROTOTYPE SECTION (3D PHONE + 25 SCREEN BLUEPRINT) ==================== -->
+    <section
+      id="prototype"
+      class="py-24 bg-[#f2f5ee] border-y border-brand-900/10 scroll-mt-20"
+    >
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+          <div
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]"
+          >
+            <span class="material-symbols-outlined text-sm">devices</span>
+            PreServa Architecture & Design Blueprint
+          </div>
+          <h2
+            class="text-3xl sm:text-5xl font-extrabold text-brand-900 tracking-tight"
+          >
+            Our Prototype
+          </h2>
+          <p class="text-gray-600 mt-3 text-base">
+            Interactive System Showcase & Mobile Application Interface. Below is
+            the complete 25-screen workflow designed for stall dispatch, buyer
+            reservations, dynamic pricing, and inventory monitoring.
+          </p>
+        </div>
+
+        <!-- 3D Smartphone Frame (Front App Screen & Clean Rear Chassis) -->
+        <div
+          class="bg-white rounded-3xl p-8 border border-gray-200 shadow-md mb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center reveal hover:shadow-[0_0_30px_rgba(59,170,92,0.15)] transition-shadow duration-500"
+        >
+          <div
+            class="lg:col-span-7 relative h-[520px] rounded-2xl bg-gradient-to-b from-[#eaf4ec] to-[#f4f9f4] flex items-center justify-center overflow-hidden border border-brand-100"
+          >
+            <div id="threejs-phone-container" class="w-full h-full"></div>
+
+            <!-- Interaction Hint -->
+            <div
+              class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-brand-900/80 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1.5 shadow-md pointer-events-none"
+            >
+              <span class="material-symbols-outlined text-sm">touch_app</span>
+              <span>Click & Drag device to rotate 360°</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-5">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold uppercase tracking-wider"
+            >
+              <span class="material-symbols-outlined text-sm">3d_rotation</span>
+              Interactive 3D Hardware & UI Showcase
+            </div>
+
+            <h3 class="text-3xl font-extrabold text-brand-900">
+              Experience PreServa in 3D
+            </h3>
+
+            <p class="text-sm text-gray-600 leading-relaxed">
+              Interact with the PreServa mobile application in real-time 3D
+              space. Click and drag to inspect our intuitive vendor & buyer
+              interface running directly on device hardware with a clean
+              metallic rear chassis.
+            </p>
+
+            <div class="space-y-2 pt-2">
+              <div
+                class="flex items-center gap-2 text-xs font-semibold text-gray-700"
+              >
+                <span class="material-symbols-outlined text-brand-600 text-base"
+                  >check_circle</span
+                >
+                <span>Auto-Rotating Ambient Motion with Physics Inertia</span>
+              </div>
+              <div
+                class="flex items-center gap-2 text-xs font-semibold text-gray-700"
+              >
+                <span class="material-symbols-outlined text-brand-600 text-base"
+                  >check_circle</span
+                >
+                <span
+                  >Click & Drag to Orbit 360° Horizontally & Vertically</span
+                >
+              </div>
+              <div
+                class="flex items-center gap-2 text-xs font-semibold text-gray-700"
+              >
+                <span class="material-symbols-outlined text-brand-600 text-base"
+                  >check_circle</span
+                >
+                <span>Clean Forest Green Metallic Rear Panel</span>
+              </div>
+            </div>
+
+            <div class="pt-4 flex flex-wrap items-center gap-3">
+              <a
+                href="#prototype-grid"
+                class="px-6 py-3 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.4)] text-white text-xs font-bold transition-all shadow-md flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-sm">schema</span>
+                <span>Inspect All Prototype Screens</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 25 Real Prototype Cards Grid -->
+        <div
+          id="prototype-grid"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        ></div>
+      </div>
+    </section>
+
+    <!-- ==================== ABOUT US SECTION ==================== -->
+    <section id="about" class="py-24 px-6 max-w-7xl mx-auto scroll-mt-20">
+      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+        <div
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-100 border border-brand-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]"
+        >
+          <span class="material-symbols-outlined text-sm">eco</span>
+          About the PreServa Vision
+        </div>
+        <h2
+          class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight"
+        >
+          PRESERVA — Sell Fresh. Save More. Waste Less.
+        </h2>
+        <div
+          class="mt-6 space-y-4 text-gray-700 text-base leading-relaxed text-justify sm:text-center"
+        >
+          <p>
+            PRESERVA is an agricultural technology platform designed to help
+            local market vendors reduce food waste while making fresh and
+            affordable produce accessible to the community. It connects vendors
+            with local buyers and businesses through freshness-based discounts,
+            imperfect but safe produce listings, and product reservations.
+          </p>
+          <p>
+            Through PRESERVA, we aim to give unsold produce another opportunity
+            to be sold instead of going to waste, helping vendors recover their
+            costs and allowing buyers to enjoy affordable products.
+          </p>
+        </div>
+      </div>
+
+      <!-- Goal, Mission, Vision Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <div
+          class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal"
+        >
+          <div
+            class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6"
+          >
+            <span class="material-symbols-outlined text-2xl"
+              >track_changes</span
+            >
+          </div>
+          <span
+            class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1"
+            >Target Milestone</span
+          >
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Goal</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To reduce fruit and vegetable spoilage among local market vendors by
+            providing an accessible platform where unsold and surplus produce
+            can be sold at discounted prices before they spoil.
+          </p>
+        </div>
+
+        <div
+          class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal"
+        >
+          <div
+            class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6"
+          >
+            <span class="material-symbols-outlined text-2xl">flag</span>
+          </div>
+          <span
+            class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1"
+            >Our Mandate</span
+          >
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Mission</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To connect local vendors, household buyers, and businesses through a
+            convenient and affordable digital platform that promotes responsible
+            purchasing, reduces food waste, and supports livelihoods.
+          </p>
+        </div>
+
+        <div
+          class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal"
+        >
+          <div
+            class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6"
+          >
+            <span class="material-symbols-outlined text-2xl">visibility</span>
+          </div>
+          <span
+            class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1"
+            >Long-Term Future</span
+          >
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Vision</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To become a trusted agricultural technology platform that helps
+            build a community where no good produce goes to waste, local vendors
+            thrive, and everyone has access to affordable quality food.
+          </p>
+        </div>
+      </div>
+
+      <!-- Core Values -->
+      <div class="reveal">
+        <div class="text-center mb-10">
+          <span
+            class="text-xs font-bold uppercase tracking-widest text-brand-600"
+            >Guiding Principles</span
+          >
+          <h3 class="text-3xl font-extrabold text-brand-900">
+            Our Core Values
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div
+            class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3"
+            >
+              01
+            </div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">
+              Sustainability
+            </h4>
+            <p class="text-xs text-gray-600">
+              Promoting responsible consumption and reducing food waste.
+            </p>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3"
+            >
+              02
+            </div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">
+              Community Support
+            </h4>
+            <p class="text-xs text-gray-600">
+              Helping local vendors and buyers benefit from affordable produce.
+            </p>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3"
+            >
+              03
+            </div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">Affordability</h4>
+            <p class="text-xs text-gray-600">
+              Making quality and safe produce accessible at reasonable prices.
+            </p>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3"
+            >
+              04
+            </div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">
+              Responsibility
+            </h4>
+            <p class="text-xs text-gray-600">
+              Encouraging people to value food and avoid unnecessary waste.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CONTACT US & TEAM SECTION ==================== -->
+    <section
+      id="contact"
+      class="py-24 bg-[#f2f5ee] border-t border-brand-900/10 scroll-mt-20"
+    >
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+          <div
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]"
+          >
+            <span class="material-symbols-outlined text-sm">support_agent</span>
+            Get in Touch with PreServa
+          </div>
+          <h2
+            class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight"
+          >
+            Team & Contact
+          </h2>
+          <p class="text-gray-600 mt-3 text-base">
+            Have questions about PreServa or want to connect with our team? Feel
+            free to reach out to us through our social media accounts or contact
+            numbers.
+          </p>
+        </div>
+
+        <!-- 3 Team Profiles (Christian Francisco = CEO, M Jayross Cruspero = COO, Jhun Rey Flores = CMO) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <!-- Christian Francisco (CEO) -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal"
+          >
+            <div
+              class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100"
+            >
+              <img
+                src="Christian.png"
+                alt="Christian Francisco"
+                class="w-full h-full object-cover"
+                onerror="
+                  this.onerror = null;
+                  this.src =
+                    'https://placehold.co/200x200/14532d/white?text=CF';
+                "
+              />
+            </div>
+            <span
+              class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2"
+              >CEO</span
+            >
+            <h3 class="text-xl font-bold text-brand-900">
+              Christian Francisco
+            </h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">
+              Chief Executive Officer (CEO)
+            </p>
+            <p class="text-xs text-gray-500 mb-6">
+              Spearheading organizational vision, strategic public market vendor
+              partnerships, stakeholder alignment, and ecosystem execution.
+            </p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a
+                href="https://www.facebook.com/peppertian"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="Facebook.png"
+                    alt="Facebook"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';
+                    "
+                  />
+                  <span>peppertian</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >open_in_new</span
+                >
+              </a>
+              <a
+                href="tel:09637411495"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="phone.png"
+                    alt="Phone"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://cdn-icons-png.flaticon.com/512/724/724664.png';
+                    "
+                  />
+                  <span>09637411495</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >call</span
+                >
+              </a>
+            </div>
+          </div>
+
+          <!-- M Jayross Cruspero (COO) -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal"
+          >
+            <div
+              class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100"
+            >
+              <img
+                src="MJ.png"
+                alt="M Jayross Cruspero"
+                class="w-full h-full object-cover"
+                onerror="
+                  this.onerror = null;
+                  this.src =
+                    'https://placehold.co/200x200/14532d/white?text=MJ';
+                "
+              />
+            </div>
+            <span
+              class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2"
+              >COO</span
+            >
+            <h3 class="text-xl font-bold text-brand-900">M Jayross Cruspero</h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">
+              Chief Operating Officer (COO)
+            </p>
+            <p class="text-xs text-gray-500 mb-6">
+              Directing technical operations, live stall batch logic, market
+              waste mapping algorithms, and platform workflow execution.
+            </p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a
+                href="https://www.facebook.com/mjay.cruspero.7/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="Facebook.png"
+                    alt="Facebook"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';
+                    "
+                  />
+                  <span>mjay.cruspero.7</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >open_in_new</span
+                >
+              </a>
+              <a
+                href="tel:09945493313"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="phone.png"
+                    alt="Phone"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://cdn-icons-png.flaticon.com/512/724/724664.png';
+                    "
+                  />
+                  <span>09945493313</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >call</span
+                >
+              </a>
+            </div>
+          </div>
+
+          <!-- Jhun Rey Flores (CMO) -->
+          <div
+            class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal"
+          >
+            <div
+              class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100"
+            >
+              <img
+                src="JR.jpg"
+                alt="Jhun Rey Flores"
+                class="w-full h-full object-cover"
+                onerror="
+                  this.onerror = null;
+                  this.src =
+                    'https://placehold.co/200x200/14532d/white?text=JR';
+                "
+              />
+            </div>
+            <span
+              class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2"
+              >CMO</span
+            >
+            <h3 class="text-xl font-bold text-brand-900">Jhun Rey Flores</h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">
+              Chief Marketing Officer (CMO)
+            </p>
+            <p class="text-xs text-gray-500 mb-6">
+              Leading vendor community outreach, public awareness campaigns,
+              brand engagement, and market adoption growth.
+            </p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a
+                href="https://www.facebook.com/ewpoke"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="Facebook.png"
+                    alt="Facebook"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg';
+                    "
+                  />
+                  <span>ewpoke</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >open_in_new</span
+                >
+              </a>
+              <a
+                href="tel:09631104216"
+                class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors"
+              >
+                <span class="flex items-center gap-2">
+                  <img
+                    src="phone.png"
+                    alt="Phone"
+                    class="w-4 h-4 object-contain"
+                    onerror="
+                      this.onerror = null;
+                      this.src =
+                        'https://cdn-icons-png.flaticon.com/512/724/724664.png';
+                    "
+                  />
+                  <span>09631104216</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400"
+                  >call</span
+                >
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map & Form (Pantay & Equal Height) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          <!-- Left Card: Physical Institution & Research Lab (Map) -->
+          <div
+            class="lg:col-span-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm reveal flex flex-col justify-between h-full"
+          >
+            <div>
+              <div
+                class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2"
+              >
+                <span class="material-symbols-outlined text-sm"
+                  >location_on</span
+                >
+                Physical Institution & Research Lab
+              </div>
+              <h3 class="text-2xl font-black text-brand-900 mb-2">
+                You Can Find Us Here
+              </h3>
+              <p class="text-xs text-gray-600 mb-4">
+                PreServa is a student startup project developed by BSIS students
+                of Davao del Norte State College.
+              </p>
+
+              <div
+                class="p-3.5 rounded-2xl bg-brand-50 border border-brand-200 mb-4 text-xs font-medium text-brand-900"
+              >
+                <strong>Davao del Norte State College (DNSC)</strong><br />
+                New Visayas, Panabo City, Davao del Norte, Philippines 8105
+              </div>
+            </div>
+
+            <!-- Map Container -->
+            <div
+              class="w-full h-64 lg:h-[270px] rounded-2xl overflow-hidden border border-gray-200 my-4 bg-gray-100 flex-grow shadow-inner"
+            >
+              <iframe
+                src="https://maps.google.com/maps?q=Davao%20del%20Norte%20State%20College,%20Panabo%20City&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                class="w-full h-full border-0"
+                allowfullscreen=""
+                loading="lazy"
+              >
+              </iframe>
+            </div>
+
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=Davao+del+Norte+State+College,+Panabo+City,+Davao+del+Norte,+Philippines"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.35)] text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm mt-auto"
+            >
+              <span class="material-symbols-outlined text-sm">navigation</span>
+              <span>Get Directions to DNSC</span>
+            </a>
+          </div>
+
+          <!-- Right Card: Direct Dispatch (Form nga may Glowing Textfields) -->
+          <div
+            class="lg:col-span-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm reveal flex flex-col justify-between h-full"
+          >
+            <div>
+              <div
+                class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2"
+              >
+                <span class="material-symbols-outlined text-sm">send</span>
+                Direct Dispatch
+              </div>
+              <h3 class="text-2xl font-black text-brand-900 mb-2">
+                Send PreServa a Message
+              </h3>
+              <p class="text-xs text-gray-600 mb-6">
+                Are you a market vendor, commercial enterprise, or institutional
+                reviewer? Leave us a direct inquiry below.
+              </p>
+            </div>
+
+            <!-- Form nga may Interactive Glowing Fields -->
+            <form
+              id="contact-form"
+              onsubmit="handleFormSubmit(event)"
+              class="space-y-4 flex flex-col flex-grow justify-between"
+            >
+              <div class="space-y-4">
+                <!-- Full Name Field with Glowing Animation -->
                 <div class="field-wrapper">
-                  <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm text-brand-600">alternate_email</span>
-                    <span>Email / Phone</span>
+                  <label
+                    class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5"
+                  >
+                    <span
+                      class="material-symbols-outlined text-sm text-brand-600"
+                      >person</span
+                    >
+                    <span>Full Name</span>
                   </label>
-                  <input 
-                    type="text" 
-                    required 
-                    placeholder="name@domain.com or 09..." 
-                    class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm" 
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Maria Santos"
+                    class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm"
                   />
                 </div>
+
+                <!-- Email & Subject with Glowing Animation -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="field-wrapper">
+                    <label
+                      class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5"
+                    >
+                      <span
+                        class="material-symbols-outlined text-sm text-brand-600"
+                        >alternate_email</span
+                      >
+                      <span>Email / Phone</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="name@domain.com or 09..."
+                      class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm"
+                    />
+                  </div>
+                  <div class="field-wrapper">
+                    <label
+                      class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5"
+                    >
+                      <span
+                        class="material-symbols-outlined text-sm text-brand-600"
+                        >category</span
+                      >
+                      <span>Subject</span>
+                    </label>
+                    <select
+                      class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm bg-white cursor-pointer"
+                    >
+                      <option>General Inquiry</option>
+                      <option>Vendor Participation</option>
+                      <option>Bulk Buyer Partnership</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Textarea with Glowing Animation -->
                 <div class="field-wrapper">
-                  <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm text-brand-600">category</span>
-                    <span>Subject</span>
+                  <label
+                    class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5"
+                  >
+                    <span
+                      class="material-symbols-outlined text-sm text-brand-600"
+                      >chat</span
+                    >
+                    <span>Your Message</span>
                   </label>
-                  <select class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm bg-white cursor-pointer">
-                    <option>General Inquiry</option>
-                    <option>Vendor Participation</option>
-                    <option>Bulk Buyer Partnership</option>
-                  </select>
+                  <textarea
+                    rows="4"
+                    required
+                    placeholder="Detail your question, vendor stall location, or collaboration request..."
+                    class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm resize-none"
+                  ></textarea>
                 </div>
               </div>
 
-              <!-- Textarea with Glowing Animation -->
-              <div class="field-wrapper">
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-sm text-brand-600">chat</span>
-                  <span>Your Message</span>
-                </label>
-                <textarea 
-                  rows="4" 
-                  required 
-                  placeholder="Detail your question, vendor stall location, or collaboration request..." 
-                  class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm resize-none"
-                ></textarea>
-              </div>
-            </div>
+              <!-- Glowing Submit Button -->
+              <button
+                type="submit"
+                class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_24px_rgba(20,83,45,0.4)] text-white font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-md mt-4"
+              >
+                <span class="material-symbols-outlined text-base">send</span>
+                <span>Submit Inquiry</span>
+              </button>
+            </form>
 
-            <!-- Glowing Submit Button -->
-            <button 
-              type="submit" 
-              class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_24px_rgba(20,83,45,0.4)] text-white font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-md mt-4"
+            <div
+              id="form-success"
+              class="hidden mt-4 p-4 rounded-xl bg-green-100 border border-green-300 text-green-900 text-xs font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(59,170,92,0.2)]"
             >
-              <span class="material-symbols-outlined text-base">send</span>
-              <span>Submit Inquiry</span>
-            </button>
-          </form>
-
-          <div id="form-success" class="hidden mt-4 p-4 rounded-xl bg-green-100 border border-green-300 text-green-900 text-xs font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(59,170,92,0.2)]">
-            <span class="material-symbols-outlined text-green-700">check_circle</span>
-            <span>Thank you! Your message has been sent to the PreServa team.</span>
+              <span class="material-symbols-outlined text-green-700"
+                >check_circle</span
+              >
+              <span
+                >Thank you! Your message has been sent to the PreServa
+                team.</span
+              >
+            </div>
           </div>
         </div>
-
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ==================== FOOTER (CENTERED & STACKED) ==================== -->
-  <footer class="bg-white border-t border-gray-200 py-12 px-6">
-    <div class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-6">
-      
-      <!-- Vertically Stacked Branding & Identity Block -->
-      <div class="flex flex-col items-center justify-center text-center gap-3">
-        <!-- Logo on Top with subtle glow on hover -->
-        <img 
-          src="onlylogo.png" 
-          alt="PreServa Logo" 
-          class="w-12 h-12 object-contain mx-auto transition-transform hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(59,170,92,0.4)]" 
-          onerror="this.onerror=null; this.src='https://placehold.co/80x80/14532d/white?text=P';" 
-        />
-        
-        <!-- Brand Title & Platform Badge Directly Below Logo -->
-        <div class="flex items-center justify-center gap-2">
-          <span class="text-base font-black text-brand-900 tracking-tight">PreServa</span>
-          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-100 text-brand-800 uppercase tracking-wider">
-            Agri-Tech Platform
-          </span>
+    <!-- ==================== FOOTER (CENTERED & STACKED) ==================== -->
+    <footer class="bg-white border-t border-gray-200 py-12 px-6">
+      <div
+        class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-6"
+      >
+        <!-- Vertically Stacked Branding & Identity Block -->
+        <div
+          class="flex flex-col items-center justify-center text-center gap-3"
+        >
+          <!-- Logo on Top with subtle glow on hover -->
+          <img
+            src="onlylogo.png"
+            alt="PreServa Logo"
+            class="w-12 h-12 object-contain mx-auto transition-transform hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(59,170,92,0.4)]"
+            onerror="
+              this.onerror = null;
+              this.src = 'https://placehold.co/80x80/14532d/white?text=P';
+            "
+          />
+
+          <!-- Brand Title & Platform Badge Directly Below Logo -->
+          <div class="flex items-center justify-center gap-2">
+            <span class="text-base font-black text-brand-900 tracking-tight"
+              >PreServa</span
+            >
+            <span
+              class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-100 text-brand-800 uppercase tracking-wider"
+            >
+              Agri-Tech Platform
+            </span>
+          </div>
+
+          <!-- Tagline / Copyright Description -->
+          <p class="text-xs text-gray-500 max-w-md mx-auto leading-relaxed">
+            © 2026 PreServa. Connecting vendors, buyers, and communities for
+            zero food waste.
+          </p>
         </div>
 
-        <!-- Tagline / Copyright Description -->
-        <p class="text-xs text-gray-500 max-w-md mx-auto leading-relaxed">
-          © 2026 PreServa. Connecting vendors, buyers, and communities for zero food waste.
-        </p>
+        <!-- Centered Navigation Links with Smooth Glow -->
+        <nav
+          class="flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-gray-600"
+        >
+          <a
+            href="#home"
+            class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50"
+            >Home</a
+          >
+          <a
+            href="#prototype"
+            class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50"
+            >Our Prototype</a
+          >
+          <a
+            href="#about"
+            class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50"
+            >About Us</a
+          >
+          <a
+            href="#contact"
+            class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50"
+            >Contact Us</a
+          >
+        </nav>
       </div>
+    </footer>
 
-      <!-- Centered Navigation Links with Smooth Glow -->
-      <nav class="flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-gray-600">
-        <a href="#home" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Home</a>
-        <a href="#prototype" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Our Prototype</a>
-        <a href="#about" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">About Us</a>
-        <a href="#contact" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Contact Us</a>
-      </nav>
+    <!-- ==================== PROTOTYPE LIGHTBOX MODAL ==================== -->
+    <div
+      id="lightbox-modal"
+      class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-gray-100 relative"
+      >
+        <button
+          onclick="closeModal()"
+          class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center z-10 transition-colors"
+        >
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
 
+        <div class="p-4 border-b border-gray-100">
+          <span
+            id="modal-badge"
+            class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 uppercase tracking-wider"
+            >Screen 01</span
+          >
+          <h4 id="modal-title" class="text-base font-bold text-brand-900 mt-1">
+            Screen Preview
+          </h4>
+        </div>
+
+        <div
+          class="p-4 bg-gray-50 flex items-center justify-center max-h-[580px] overflow-hidden"
+        >
+          <img
+            id="modal-img"
+            src=""
+            alt="Screen Preview"
+            class="w-full max-h-[520px] object-contain rounded-2xl shadow-md bg-white"
+          />
+        </div>
+      </div>
     </div>
-  </footer>
 
-  <!-- ==================== PROTOTYPE LIGHTBOX MODAL ==================== -->
-  <div id="lightbox-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-gray-100 relative">
-      <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center z-10 transition-colors">
-        <span class="material-symbols-outlined text-lg">close</span>
-      </button>
+    <!-- ==================== JAVASCRIPT: 3D PHONE + 25 SCREENS + GLOW SPY ==================== -->
+    <script>
+      // 1. DATA ARRAY FOR 25 PROTOTYPE SCREENS
+      const prototypeScreens = [
+        {
+          id: 1,
+          title: "Login Screen (User Mode)",
+          role: "Vendor & Buyer Login / Authentication",
+          img: "1.png",
+        },
+        {
+          id: 2,
+          title: "Login Screen (Admin Mode)",
+          role: "Market Stall Administrator Flow",
+          img: "2.png",
+        },
+        {
+          id: 3,
+          title: "Create Account",
+          role: "Vendor Registration & Onboarding",
+          img: "3.png",
+        },
+        {
+          id: 4,
+          title: "Stalls Feed (Fresh)",
+          role: "Live Stalls Produce Stream",
+          img: "4.png",
+        },
+        {
+          id: 5,
+          title: "Stalls Feed (Recent)",
+          role: "Mid-Day Produce Inventory Markdowns",
+          img: "5.png",
+        },
+        {
+          id: 6,
+          title: "Stalls Feed (Ripe)",
+          role: "Ripe Safe Produce Direct Listings",
+          img: "6.png",
+        },
+        {
+          id: 7,
+          title: "Stall Management & Actions",
+          role: "Batch Management & Post Action Hub",
+          img: "7.png",
+        },
+        {
+          id: 8,
+          title: "Post New Item (Freshness)",
+          role: "Decay State Tagging & Price Set",
+          img: "8.png",
+        },
+        {
+          id: 9,
+          title: "Post New Item (Buyer Select)",
+          role: "Household or Business Buyer Routing",
+          img: "9.png",
+        },
+        {
+          id: 10,
+          title: "Marketplace Feed",
+          role: "Nearby Stall Produce Geolocation Feed",
+          img: "10.png",
+        },
+        {
+          id: 11,
+          title: "Marketplace (Best Price)",
+          role: "Steep Markdown Search Filter Engine",
+          img: "11.png",
+        },
+        {
+          id: 12,
+          title: "Marketplace (Fresh Veg)",
+          role: "Fresh Veggies Categorical View",
+          img: "12.png",
+        },
+        {
+          id: 13,
+          title: "Marketplace (Recent)",
+          role: "Expiring Produce Rapid Reserve",
+          img: "13.png",
+        },
+        {
+          id: 14,
+          title: "Imperfect Produce Category",
+          role: "Ripe Fruit & Produce Rescue",
+          img: "14.png",
+        },
+        {
+          id: 15,
+          title: "Bulk Purchasing Category",
+          role: "Sack & Wholesale Crates Allocation",
+          img: "15.png",
+        },
+        {
+          id: 16,
+          title: "Commercial Wholesale",
+          role: "Food Stall & Restaurant Supplies",
+          img: "16.png",
+        },
+        {
+          id: 17,
+          title: "Price Discount Engine",
+          role: "Automated Markdown Logic",
+          img: "17.png",
+        },
+        {
+          id: 18,
+          title: "Daily Fresh Rescue Listing",
+          role: "Day-to-Day Produce Tracking",
+          img: "18.png",
+        },
+        {
+          id: 19,
+          title: "Time-Sensitive Markdowns",
+          role: "Real-Time Dynamic Discounting",
+          img: "19.png",
+        },
+        {
+          id: 20,
+          title: "Product Reservation Status",
+          role: "Reserved & Picked Up Fulfillment Feed",
+          img: "25.png",
+        },
+        {
+          id: 21,
+          title: "Fresh Produce Batching",
+          role: "Live Stall Pricing & Produce Sync",
+          img: "17.png",
+        },
+        {
+          id: 22,
+          title: "Surplus Produce Reallocation",
+          role: "End-of-Day Food Spoilage Rescue Route",
+          img: "18.png",
+        },
+        {
+          id: 23,
+          title: "Merchant Settlement Ledger",
+          role: "Direct Merchant Settlement & Cash Flow",
+          img: "19.png",
+        },
+        {
+          id: 24,
+          title: "Community Impact & Metrics",
+          role: "Regional Produce Spoilage Reduction Audit",
+          img: "25.png",
+        },
+        {
+          id: 25,
+          title: "Complete Waste Rescue Protocol",
+          role: "Zero-Waste Agricultural Lifecycle Engine",
+          img: "25.png",
+        },
+      ];
 
-      <div class="p-4 border-b border-gray-100">
-        <span id="modal-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 uppercase tracking-wider">Screen 01</span>
-        <h4 id="modal-title" class="text-base font-bold text-brand-900 mt-1">Screen Preview</h4>
-      </div>
+      // 2. RENDER THE 25 CARDS (Clean header with only Screen badge)
+      const grid = document.getElementById("prototype-grid");
+      prototypeScreens.forEach((screen) => {
+        const slotNum = String(screen.id).padStart(2, "0");
+        const card = document.createElement("div");
+        card.className = `prototype-card reveal p-5 rounded-3xl bg-white border border-gray-200/90 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.22)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col group cursor-pointer`;
+        card.onclick = () => openModal(screen);
 
-      <div class="p-4 bg-gray-50 flex items-center justify-center max-h-[580px] overflow-hidden">
-        <img id="modal-img" src="" alt="Screen Preview" class="w-full max-h-[520px] object-contain rounded-2xl shadow-md bg-white" />
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== JAVASCRIPT: 3D PHONE + 25 SCREENS + GLOW SPY ==================== -->
-  <script>
-    // 1. DATA ARRAY FOR 25 PROTOTYPE SCREENS
-    const prototypeScreens = [
-      { id: 1, title: 'Login Screen (User Mode)', role: 'Vendor & Buyer Login / Authentication', img: '1.png' },
-      { id: 2, title: 'Login Screen (Admin Mode)', role: 'Market Stall Administrator Flow', img: '2.png' },
-      { id: 3, title: 'Create Account', role: 'Vendor Registration & Onboarding', img: '3.png' },
-      { id: 4, title: 'Stalls Feed (Fresh)', role: 'Live Stalls Produce Stream', img: '4.png' },
-      { id: 5, title: 'Stalls Feed (Recent)', role: 'Mid-Day Produce Inventory Markdowns', img: '5.png' },
-      { id: 6, title: 'Stalls Feed (Ripe)', role: 'Ripe Safe Produce Direct Listings', img: '6.png' },
-      { id: 7, title: 'Stall Management & Actions', role: 'Batch Management & Post Action Hub', img: '7.png' },
-      { id: 8, title: 'Post New Item (Freshness)', role: 'Decay State Tagging & Price Set', img: '8.png' },
-      { id: 9, title: 'Post New Item (Buyer Select)', role: 'Household or Business Buyer Routing', img: '9.png' },
-      { id: 10, title: 'Marketplace Feed', role: 'Nearby Stall Produce Geolocation Feed', img: '10.png' },
-      { id: 11, title: 'Marketplace (Best Price)', role: 'Steep Markdown Search Filter Engine', img: '11.png' },
-      { id: 12, title: 'Marketplace (Fresh Veg)', role: 'Fresh Veggies Categorical View', img: '12.png' },
-      { id: 13, title: 'Marketplace (Recent)', role: 'Expiring Produce Rapid Reserve', img: '13.png' },
-      { id: 14, title: 'Imperfect Produce Category', role: 'Ripe Fruit & Produce Rescue', img: '14.png' },
-      { id: 15, title: 'Bulk Purchasing Category', role: 'Sack & Wholesale Crates Allocation', img: '15.png' },
-      { id: 16, title: 'Commercial Wholesale', role: 'Food Stall & Restaurant Supplies', img: '16.png' },
-      { id: 17, title: 'Price Discount Engine', role: 'Automated Markdown Logic', img: '17.png' },
-      { id: 18, title: 'Daily Fresh Rescue Listing', role: 'Day-to-Day Produce Tracking', img: '18.png' },
-      { id: 19, title: 'Time-Sensitive Markdowns', role: 'Real-Time Dynamic Discounting', img: '19.png' },
-      { id: 20, title: 'Product Reservation Status', role: 'Reserved & Picked Up Fulfillment Feed', img: '25.png' },
-      { id: 21, title: 'Fresh Produce Batching', role: 'Live Stall Pricing & Produce Sync', img: '17.png' },
-      { id: 22, title: 'Surplus Produce Reallocation', role: 'End-of-Day Food Spoilage Rescue Route', img: '18.png' },
-      { id: 23, title: 'Merchant Settlement Ledger', role: 'Direct Merchant Settlement & Cash Flow', img: '19.png' },
-      { id: 24, title: 'Community Impact & Metrics', role: 'Regional Produce Spoilage Reduction Audit', img: '25.png' },
-      { id: 25, title: 'Complete Waste Rescue Protocol', role: 'Zero-Waste Agricultural Lifecycle Engine', img: '25.png' }
-    ];
-
-    // 2. RENDER THE 25 CARDS (Clean header with only Screen badge)
-    const grid = document.getElementById('prototype-grid');
-    prototypeScreens.forEach((screen) => {
-      const slotNum = String(screen.id).padStart(2, '0');
-      const card = document.createElement('div');
-      card.className = `prototype-card reveal p-5 rounded-3xl bg-white border border-gray-200/90 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.22)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col group cursor-pointer`;
-      card.onclick = () => openModal(screen);
-
-      card.innerHTML = `
+        card.innerHTML = `
         <div class="flex items-center justify-between mb-3">
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 uppercase tracking-wider group-hover:bg-brand-200 transition-colors">
             Screen ${slotNum}
@@ -807,244 +1421,304 @@
           <p class="text-[11px] text-gray-500 font-medium mt-0.5">${screen.role}</p>
         </div>
       `;
-      grid.appendChild(card);
-    });
-
-    // 3. LIGHTBOX MODAL
-    function openModal(screen) {
-      document.getElementById('modal-badge').innerText = `Screen ${String(screen.id).padStart(2, '0')}`;
-      document.getElementById('modal-title').innerText = screen.title;
-      document.getElementById('modal-img').src = screen.img;
-      document.getElementById('lightbox-modal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('lightbox-modal').classList.add('hidden');
-    }
-
-    document.getElementById('lightbox-modal').addEventListener('click', (e) => {
-      if (e.target.id === 'lightbox-modal') closeModal();
-    });
-
-    // 4. THREE.JS INTERACTIVE ROTATING 3D PHONE (IMAGE ON FRONT, CLEAN REAR)
-    (function init3DPhone() {
-      const container = document.getElementById('threejs-phone-container');
-      if (!container) return;
-
-      const width = container.clientWidth || 450;
-      const height = container.clientHeight || 520;
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-      camera.position.set(0, 0, 9);
-
-      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      container.appendChild(renderer.domElement);
-
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
-      scene.add(ambientLight);
-
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.35);
-      dirLight.position.set(5, 10, 7);
-      scene.add(dirLight);
-
-      const rimLight = new THREE.DirectionalLight(0x3baa5c, 1.0);
-      rimLight.position.set(-5, -5, -4);
-      scene.add(rimLight);
-
-      const phoneGroup = new THREE.Group();
-      scene.add(phoneGroup);
-
-      const phoneWidth = 3.2;
-      const phoneHeight = 6.4;
-      const phoneDepth = 0.28;
-
-      // TEXTURE LOADER: Loads image.png onto front screen
-      const textureLoader = new THREE.TextureLoader();
-      const screenTexture = textureLoader.load('image.png');
-      screenTexture.generateMipmaps = true;
-      screenTexture.minFilter = THREE.LinearMipmapLinearFilter;
-
-      const bodyMaterial = new THREE.MeshStandardMaterial({
-        color: 0x143820,
-        roughness: 0.35,
-        metalness: 0.6
+        grid.appendChild(card);
       });
 
-      const screenMaterial = new THREE.MeshBasicMaterial({
-        map: screenTexture,
-        transparent: false
+      // 3. LIGHTBOX MODAL
+      function openModal(screen) {
+        document.getElementById("modal-badge").innerText =
+          `Screen ${String(screen.id).padStart(2, "0")}`;
+        document.getElementById("modal-title").innerText = screen.title;
+        document.getElementById("modal-img").src = screen.img;
+        document.getElementById("lightbox-modal").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("lightbox-modal").classList.add("hidden");
+      }
+
+      document
+        .getElementById("lightbox-modal")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "lightbox-modal") closeModal();
+        });
+
+      // 4. THREE.JS INTERACTIVE ROTATING 3D PHONE (IMAGE ON FRONT, CLEAN REAR)
+      (function init3DPhone() {
+        const container = document.getElementById("threejs-phone-container");
+        if (!container) return;
+
+        const width = container.clientWidth || 450;
+        const height = container.clientHeight || 520;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          45,
+          width / height,
+          0.1,
+          1000,
+        );
+        camera.position.set(0, 0, 9);
+
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          antialias: true,
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.35);
+        dirLight.position.set(5, 10, 7);
+        scene.add(dirLight);
+
+        const rimLight = new THREE.DirectionalLight(0x3baa5c, 1.0);
+        rimLight.position.set(-5, -5, -4);
+        scene.add(rimLight);
+
+        const phoneGroup = new THREE.Group();
+        scene.add(phoneGroup);
+
+        const phoneWidth = 3.2;
+        const phoneHeight = 6.4;
+        const phoneDepth = 0.28;
+
+        // TEXTURE LOADER: Loads image.png onto front screen
+        const textureLoader = new THREE.TextureLoader();
+        const screenTexture = textureLoader.load("image.png");
+        screenTexture.generateMipmaps = true;
+        screenTexture.minFilter = THREE.LinearMipmapLinearFilter;
+
+        const bodyMaterial = new THREE.MeshStandardMaterial({
+          color: 0x143820,
+          roughness: 0.35,
+          metalness: 0.6,
+        });
+
+        const screenMaterial = new THREE.MeshBasicMaterial({
+          map: screenTexture,
+          transparent: false,
+        });
+
+        // Chassis Box
+        const bodyGeom = new THREE.BoxGeometry(
+          phoneWidth,
+          phoneHeight,
+          phoneDepth,
+        );
+        const phoneMesh = new THREE.Mesh(bodyGeom, bodyMaterial);
+        phoneGroup.add(phoneMesh);
+
+        // FRONT SCREEN FACE (Displays image.png)
+        const screenGeom = new THREE.PlaneGeometry(
+          phoneWidth * 0.94,
+          phoneHeight * 0.95,
+        );
+        const screenMesh = new THREE.Mesh(screenGeom, screenMaterial);
+        screenMesh.position.z = phoneDepth / 2 + 0.005;
+        phoneGroup.add(screenMesh);
+
+        // Dynamic Island Pill Notch
+        const pillGeom = new THREE.PlaneGeometry(0.75, 0.16);
+        const pillMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const pillMesh = new THREE.Mesh(pillGeom, pillMat);
+        pillMesh.position.set(0, phoneHeight * 0.44, phoneDepth / 2 + 0.01);
+        phoneGroup.add(pillMesh);
+
+        // BACK PANEL (Clean Forest Green Titanium Finish - NO LOGO)
+        const backGeom = new THREE.PlaneGeometry(
+          phoneWidth * 0.92,
+          phoneHeight * 0.92,
+        );
+        const backMaterial = new THREE.MeshStandardMaterial({
+          color: 0x184227,
+          roughness: 0.4,
+          metalness: 0.5,
+        });
+        const backMesh = new THREE.Mesh(backGeom, backMaterial);
+        backMesh.rotation.y = Math.PI;
+        backMesh.position.z = -(phoneDepth / 2) - 0.005;
+        phoneGroup.add(backMesh);
+
+        // Camera Bump
+        const bumpGeom = new THREE.BoxGeometry(1.2, 1.2, 0.12);
+        const bumpMaterial = new THREE.MeshStandardMaterial({
+          color: 0x0f2917,
+          roughness: 0.3,
+          metalness: 0.7,
+        });
+        const bumpMesh = new THREE.Mesh(bumpGeom, bumpMaterial);
+        bumpMesh.position.set(
+          phoneWidth * 0.22,
+          phoneHeight * 0.32,
+          -(phoneDepth / 2) - 0.06,
+        );
+        phoneGroup.add(bumpMesh);
+
+        // 3 Camera Lenses
+        const lensGeom = new THREE.CylinderGeometry(0.22, 0.22, 0.16, 24);
+        const lensMat = new THREE.MeshStandardMaterial({
+          color: 0x050806,
+          roughness: 0.1,
+          metalness: 0.95,
+        });
+        lensGeom.rotateX(Math.PI / 2);
+
+        const lens1 = new THREE.Mesh(lensGeom, lensMat);
+        lens1.position.set(
+          phoneWidth * 0.12,
+          phoneHeight * 0.38,
+          -(phoneDepth / 2) - 0.12,
+        );
+        phoneGroup.add(lens1);
+
+        const lens2 = new THREE.Mesh(lensGeom, lensMat);
+        lens2.position.set(
+          phoneWidth * 0.32,
+          phoneHeight * 0.38,
+          -(phoneDepth / 2) - 0.12,
+        );
+        phoneGroup.add(lens2);
+
+        const lens3 = new THREE.Mesh(lensGeom, lensMat);
+        lens3.position.set(
+          phoneWidth * 0.22,
+          phoneHeight * 0.24,
+          -(phoneDepth / 2) - 0.12,
+        );
+        phoneGroup.add(lens3);
+
+        phoneGroup.rotation.y = -0.3;
+        phoneGroup.rotation.x = 0.08;
+
+        // Mouse & Touch Drag Rotation
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let autoRotate = true;
+
+        const onPointerDown = (e) => {
+          isDragging = true;
+          autoRotate = false;
+          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+          const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+          previousMousePosition = { x: clientX, y: clientY };
+        };
+
+        const onPointerMove = (e) => {
+          if (!isDragging) return;
+          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+          const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+          const deltaX = clientX - previousMousePosition.x;
+          const deltaY = clientY - previousMousePosition.y;
+
+          phoneGroup.rotation.y += deltaX * 0.012;
+          phoneGroup.rotation.x += deltaY * 0.012;
+          phoneGroup.rotation.x = Math.max(
+            -Math.PI / 3,
+            Math.min(Math.PI / 3, phoneGroup.rotation.x),
+          );
+
+          previousMousePosition = { x: clientX, y: clientY };
+        };
+
+        const onPointerUp = () => {
+          isDragging = false;
+          setTimeout(() => {
+            if (!isDragging) autoRotate = true;
+          }, 2500);
+        };
+
+        container.addEventListener("mousedown", onPointerDown);
+        window.addEventListener("mousemove", onPointerMove);
+        window.addEventListener("mouseup", onPointerUp);
+
+        container.addEventListener("touchstart", onPointerDown, {
+          passive: true,
+        });
+        window.addEventListener("touchmove", onPointerMove, { passive: true });
+        window.addEventListener("touchend", onPointerUp);
+
+        window.addEventListener("resize", () => {
+          const w = container.clientWidth || 450;
+          const h = container.clientHeight || 520;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        });
+
+        const animate = () => {
+          requestAnimationFrame(animate);
+          if (autoRotate && !isDragging) {
+            phoneGroup.rotation.y += 0.009;
+            phoneGroup.position.y = Math.sin(Date.now() * 0.002) * 0.12;
+          }
+          renderer.render(scene, camera);
+        };
+        animate();
+      })();
+
+      // 5. SCROLL REVEAL OBSERVER
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add("active");
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => revealObserver.observe(el));
+
+      // 6. SCROLL-SPY & ACTIVE GLOW FOR NAVIGATION LINKS
+      const sections = document.querySelectorAll("section[id]");
+      const navLinks = document.querySelectorAll(".nav-glow-item");
+
+      window.addEventListener("scroll", () => {
+        let currentSectionId = "";
+        const scrollPosition = window.pageYOffset + 240;
+
+        sections.forEach((section) => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
+          if (
+            scrollPosition >= sectionTop &&
+            scrollPosition < sectionTop + sectionHeight
+          ) {
+            currentSectionId = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach((link) => {
+          const targetHref = link.getAttribute("href").replace("#", "");
+          if (targetHref === currentSectionId) {
+            navLinks.forEach((l) => l.classList.remove("active-glow"));
+            link.classList.add("active-glow");
+          }
+        });
       });
 
-      // Chassis Box
-      const bodyGeom = new THREE.BoxGeometry(phoneWidth, phoneHeight, phoneDepth);
-      const phoneMesh = new THREE.Mesh(bodyGeom, bodyMaterial);
-      phoneGroup.add(phoneMesh);
-
-      // FRONT SCREEN FACE (Displays image.png)
-      const screenGeom = new THREE.PlaneGeometry(phoneWidth * 0.94, phoneHeight * 0.95);
-      const screenMesh = new THREE.Mesh(screenGeom, screenMaterial);
-      screenMesh.position.z = (phoneDepth / 2) + 0.005;
-      phoneGroup.add(screenMesh);
-
-      // Dynamic Island Pill Notch
-      const pillGeom = new THREE.PlaneGeometry(0.75, 0.16);
-      const pillMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-      const pillMesh = new THREE.Mesh(pillGeom, pillMat);
-      pillMesh.position.set(0, phoneHeight * 0.44, (phoneDepth / 2) + 0.01);
-      phoneGroup.add(pillMesh);
-
-      // BACK PANEL (Clean Forest Green Titanium Finish - NO LOGO)
-      const backGeom = new THREE.PlaneGeometry(phoneWidth * 0.92, phoneHeight * 0.92);
-      const backMaterial = new THREE.MeshStandardMaterial({
-        color: 0x184227,
-        roughness: 0.4,
-        metalness: 0.5
-      });
-      const backMesh = new THREE.Mesh(backGeom, backMaterial);
-      backMesh.rotation.y = Math.PI;
-      backMesh.position.z = -(phoneDepth / 2) - 0.005;
-      phoneGroup.add(backMesh);
-
-      // Camera Bump
-      const bumpGeom = new THREE.BoxGeometry(1.2, 1.2, 0.12);
-      const bumpMaterial = new THREE.MeshStandardMaterial({ color: 0x0f2917, roughness: 0.3, metalness: 0.7 });
-      const bumpMesh = new THREE.Mesh(bumpGeom, bumpMaterial);
-      bumpMesh.position.set(phoneWidth * 0.22, phoneHeight * 0.32, -(phoneDepth / 2) - 0.06);
-      phoneGroup.add(bumpMesh);
-
-      // 3 Camera Lenses
-      const lensGeom = new THREE.CylinderGeometry(0.22, 0.22, 0.16, 24);
-      const lensMat = new THREE.MeshStandardMaterial({ color: 0x050806, roughness: 0.1, metalness: 0.95 });
-      lensGeom.rotateX(Math.PI / 2);
-
-      const lens1 = new THREE.Mesh(lensGeom, lensMat);
-      lens1.position.set(phoneWidth * 0.12, phoneHeight * 0.38, -(phoneDepth / 2) - 0.12);
-      phoneGroup.add(lens1);
-
-      const lens2 = new THREE.Mesh(lensGeom, lensMat);
-      lens2.position.set(phoneWidth * 0.32, phoneHeight * 0.38, -(phoneDepth / 2) - 0.12);
-      phoneGroup.add(lens2);
-
-      const lens3 = new THREE.Mesh(lensGeom, lensMat);
-      lens3.position.set(phoneWidth * 0.22, phoneHeight * 0.24, -(phoneDepth / 2) - 0.12);
-      phoneGroup.add(lens3);
-
-      phoneGroup.rotation.y = -0.3;
-      phoneGroup.rotation.x = 0.08;
-
-      // Mouse & Touch Drag Rotation
-      let isDragging = false;
-      let previousMousePosition = { x: 0, y: 0 };
-      let autoRotate = true;
-
-      const onPointerDown = (e) => {
-        isDragging = true;
-        autoRotate = false;
-        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-        previousMousePosition = { x: clientX, y: clientY };
-      };
-
-      const onPointerMove = (e) => {
-        if (!isDragging) return;
-        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-        const deltaX = clientX - previousMousePosition.x;
-        const deltaY = clientY - previousMousePosition.y;
-
-        phoneGroup.rotation.y += deltaX * 0.012;
-        phoneGroup.rotation.x += deltaY * 0.012;
-        phoneGroup.rotation.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, phoneGroup.rotation.x));
-
-        previousMousePosition = { x: clientX, y: clientY };
-      };
-
-      const onPointerUp = () => {
-        isDragging = false;
-        setTimeout(() => { if (!isDragging) autoRotate = true; }, 2500);
-      };
-
-      container.addEventListener('mousedown', onPointerDown);
-      window.addEventListener('mousemove', onPointerMove);
-      window.addEventListener('mouseup', onPointerUp);
-
-      container.addEventListener('touchstart', onPointerDown, { passive: true });
-      window.addEventListener('touchmove', onPointerMove, { passive: true });
-      window.addEventListener('touchend', onPointerUp);
-
-      window.addEventListener('resize', () => {
-        const w = container.clientWidth || 450;
-        const h = container.clientHeight || 520;
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
+      // 7. DIRECT CLICK GLOW SWITCHER
+      navLinks.forEach((link) => {
+        link.addEventListener("click", function () {
+          navLinks.forEach((l) => l.classList.remove("active-glow"));
+          this.classList.add("active-glow");
+        });
       });
 
-      const animate = () => {
-        requestAnimationFrame(animate);
-        if (autoRotate && !isDragging) {
-          phoneGroup.rotation.y += 0.009;
-          phoneGroup.position.y = Math.sin(Date.now() * 0.002) * 0.12;
-        }
-        renderer.render(scene, camera);
-      };
-      animate();
-    })();
-
-    // 5. SCROLL REVEAL OBSERVER
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('active');
-      });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-    // 6. SCROLL-SPY & ACTIVE GLOW FOR NAVIGATION LINKS
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-glow-item');
-
-    window.addEventListener('scroll', () => {
-      let currentSectionId = '';
-      const scrollPosition = window.pageYOffset + 240;
-
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-          currentSectionId = section.getAttribute('id');
-        }
-      });
-
-      navLinks.forEach(link => {
-        const targetHref = link.getAttribute('href').replace('#', '');
-        if (targetHref === currentSectionId) {
-          navLinks.forEach(l => l.classList.remove('active-glow'));
-          link.classList.add('active-glow');
-        }
-      });
-    });
-
-    // 7. DIRECT CLICK GLOW SWITCHER
-    navLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        navLinks.forEach(l => l.classList.remove('active-glow'));
-        this.classList.add('active-glow');
-      });
-    });
-
-    // 8. CONTACT FORM SUBMISSION
-    function handleFormSubmit(e) {
-      e.preventDefault();
-      const form = document.getElementById('contact-form');
-      const success = document.getElementById('form-success');
-      form.reset();
-      success.classList.remove('hidden');
-      setTimeout(() => success.classList.add('hidden'), 5000);
-    }
-  </script>
-</body>
+      // 8. CONTACT FORM SUBMISSION
+      function handleFormSubmit(e) {
+        e.preventDefault();
+        const form = document.getElementById("contact-form");
+        const success = document.getElementById("form-success");
+        form.reset();
+        success.classList.remove("hidden");
+        setTimeout(() => success.classList.add("hidden"), 5000);
+      }
+    </script>
+  </body>
 </html>
