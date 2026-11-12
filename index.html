@@ -48,9 +48,59 @@
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f8faf5;
+      background-color: #f5f8f3;
       color: #1a2e22;
       overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ==================== INTERACTIVE FLOATING VEGGIE PHYSICS CANVAS ==================== */
+    #floating-veggie-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: auto; /* Makadakop og mouse drag & throw */
+    }
+
+    .agri-grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(59, 170, 92, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(20, 83, 45, 0.07) 0%, transparent 50%),
+        linear-gradient(to right, rgba(20, 83, 45, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(20, 83, 45, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Ensures website text, buttons, and cards stay sharp and accessible */
+    .content-wrapper {
+      position: relative;
+      z-index: 10;
+      pointer-events: none; /* Allows clicks on background veggies */
+    }
+    
+    /* Re-enable pointer events for interactive UI elements */
+    .interactive-element,
+    header,
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    iframe,
+    .prototype-card,
+    #hero-carousel-container,
+    #threejs-phone-container {
+      pointer-events: auto !important;
     }
 
     .reveal {
@@ -77,7 +127,7 @@
       cursor: grabbing;
     }
 
-    /* ==================== COOL GLOW & INTERACTIVE ANIMATIONS ==================== */
+    /* Glowing navigation pills */
     .nav-glow-item {
       position: relative;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -131,7 +181,7 @@
       text-shadow: 0 0 8px rgba(59, 170, 92, 0.2);
     }
 
-    /* ==================== HERO CAROUSEL ANIMATIONS ==================== */
+    /* Carousel Slides */
     .carousel-slide {
       position: absolute;
       inset: 0;
@@ -156,607 +206,603 @@
     }
   </style>
 </head>
-<body class="bg-[#f8faf5] text-[#1e2a22] antialiased selection:bg-brand-200 selection:text-brand-900">
+<body class="antialiased selection:bg-brand-200 selection:text-brand-900">
 
-  <!-- ==================== HEADER & NAVBAR ==================== -->
-  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#f8faf5]/90 backdrop-blur-md border-b border-brand-900/10 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="#home" class="flex items-center gap-3 group">
-        <img src="onlylogo.png" alt="PreServa Logo" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_10px_rgba(59,170,92,0.4)]" />
-        <div class="flex flex-col">
-          <span class="text-xl font-black tracking-tight text-brand-900 leading-none">PRESERVA</span>
-          <span class="text-[11px] font-semibold tracking-wider text-brand-600 uppercase">Agri-Tech Platform</span>
-        </div>
-      </a>
+  <!-- Interactive Throw-and-Drag Floating Vegetables & Fruits Canvas -->
+  <canvas id="floating-veggie-canvas"></canvas>
+  <div class="agri-grid-overlay"></div>
 
-      <!-- Glowing Navigation Menu -->
-      <nav id="main-nav" class="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-white/70 border border-brand-900/10 backdrop-blur-md shadow-sm">
-        <a href="#home" class="nav-glow-item text-xs font-semibold text-gray-700 active-glow">Home</a>
-        <a href="#prototype" class="nav-glow-item text-xs font-medium text-gray-700">Our Prototype</a>
-        <a href="#about" class="nav-glow-item text-xs font-medium text-gray-700">About Us</a>
-        <a href="#contact" class="nav-glow-item text-xs font-medium text-gray-700">Contact Us</a>
-      </nav>
+  <div class="content-wrapper">
 
-      <div class="flex items-center gap-4">
-        <a href="#prototype" class="px-5 py-2.5 rounded-full bg-brand-900 text-white text-xs font-bold hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.4)] active:scale-95 transition-all shadow-sm shadow-brand-900/20 flex items-center gap-1.5">
-          <span>Explore Prototype</span>
-          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    <!-- ==================== HEADER & NAVBAR ==================== -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#f5f8f3]/90 backdrop-blur-md border-b border-brand-900/10 shadow-sm">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <a href="#home" class="flex items-center gap-3 group">
+          <img src="onlylogo.png" alt="PreServa Logo" class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_10px_rgba(59,170,92,0.4)]" />
+          <div class="flex flex-col">
+            <span class="text-xl font-black tracking-tight text-brand-900 leading-none">PRESERVA</span>
+            <span class="text-[11px] font-semibold tracking-wider text-brand-600 uppercase">Agri-Tech Platform</span>
+          </div>
         </a>
-      </div>
-    </div>
-  </header>
 
-  <!-- ==================== HOME / HERO SECTION (CAROUSEL: ONLY PIC1 - PIC4) ==================== -->
-  <section id="home" class="pt-32 pb-20 px-6 max-w-7xl mx-auto scroll-mt-24">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-      
-      <!-- Left Column: Copy & Highlights -->
-      <div class="lg:col-span-7 space-y-6 reveal">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 border border-brand-300 text-brand-800 text-xs font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(59,170,92,0.15)]">
-          <span class="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
-          Agricultural Waste Rescue System
-        </div>
+        <!-- Glowing Navigation Menu -->
+        <nav id="main-nav" class="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-white/70 border border-brand-900/10 backdrop-blur-md shadow-sm">
+          <a href="#home" class="nav-glow-item text-xs font-semibold text-gray-700 active-glow">Home</a>
+          <a href="#prototype" class="nav-glow-item text-xs font-medium text-gray-700">Our Prototype</a>
+          <a href="#about" class="nav-glow-item text-xs font-medium text-gray-700">About Us</a>
+          <a href="#contact" class="nav-glow-item text-xs font-medium text-gray-700">Contact Us</a>
+        </nav>
 
-        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-brand-900 leading-[1.1]">
-          Sell Fresh. <br />
-          Save More. <br />
-          <span class="text-brand-600 drop-shadow-[0_0_15px_rgba(59,170,92,0.2)]">Waste Less.</span>
-        </h1>
-
-        <p class="text-lg text-gray-700 max-w-xl leading-relaxed">
-          An agricultural technology platform designed to help local market vendors reduce food waste while making fresh and affordable produce accessible to the community.
-        </p>
-
-        <div class="flex flex-wrap items-center gap-4 pt-2">
-          <a href="#prototype" class="px-7 py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 text-white font-semibold text-base transition-all shadow-md shadow-brand-900/20 hover:shadow-[0_0_22px_rgba(20,83,45,0.35)] active:scale-95 flex items-center gap-2">
-            <span class="material-symbols-outlined">explore</span>
+        <div class="flex items-center gap-4">
+          <a href="#prototype" class="px-5 py-2.5 rounded-full bg-brand-900 text-white text-xs font-bold hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.4)] active:scale-95 transition-all shadow-sm shadow-brand-900/20 flex items-center gap-1.5">
             <span>Explore Prototype</span>
-          </a>
-          <a href="#about" class="px-7 py-3.5 rounded-full bg-white hover:bg-gray-50 text-brand-900 font-semibold text-base border border-gray-200 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(59,170,92,0.15)] active:scale-95 flex items-center gap-2">
-            <span>Learn More About Us</span>
-            <span class="material-symbols-outlined">arrow_downward</span>
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
           </a>
         </div>
-
-        <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
-          <div>
-            <div class="text-2xl font-black text-brand-900">100%</div>
-            <div class="text-xs font-semibold text-gray-500 uppercase">Consumable Produce</div>
-          </div>
-          <div>
-            <div class="text-2xl font-black text-brand-900">Zero</div>
-            <div class="text-xs font-semibold text-gray-500 uppercase">Upfront Vendor Fee</div>
-          </div>
-          <div>
-            <div class="text-2xl font-black text-brand-900">Hyperlocal</div>
-            <div class="text-xs font-semibold text-gray-500 uppercase">Market Recovery</div>
-          </div>
-        </div>
       </div>
+    </header>
 
-      <!-- Right Column: Clean Carousel without any Unsplash links -->
-      <div class="lg:col-span-5 relative reveal">
-        <div id="hero-carousel-container" class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-gray-900 h-[460px] group">
-          
-          <!-- Slide 1: pic1.png -->
-          <div class="carousel-slide active-slide">
-            <img src="pic1.png" alt="Panabo City Vegetable and Fruit Market" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
+    <!-- ==================== HOME / HERO SECTION ==================== -->
+    <section id="home" class="pt-32 pb-20 px-6 max-w-7xl mx-auto scroll-mt-24">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Column: Copy & Highlights -->
+        <div class="lg:col-span-7 space-y-6 reveal">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 border border-brand-300 text-brand-800 text-xs font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(59,170,92,0.15)]">
+            <span class="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
+            Agricultural Waste Rescue System
           </div>
 
-          <!-- Slide 2: pic2.png -->
-          <div class="carousel-slide">
-            <img src="pic2.png" alt="Panabo City Vegetable and Fruit Market" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
-          </div>
+          <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-brand-900 leading-[1.1]">
+            Sell Fresh. <br />
+            Save More. <br />
+            <span class="text-brand-600 drop-shadow-[0_0_15px_rgba(59,170,92,0.2)]">Waste Less.</span>
+          </h1>
 
-          <!-- Slide 3: pic3.png -->
-          <div class="carousel-slide">
-            <img src="pic3.png" alt="Panabo City Vegetable and Fruit Market" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
-          </div>
-
-          <!-- Slide 4: pic4.png -->
-          <div class="carousel-slide">
-            <img src="pic4.png" alt="Panabo City Vegetable and Fruit Market" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
-          </div>
-
-          <!-- Previous and Next Navigation Arrows -->
-          <button id="carousel-prev" aria-label="Previous Slide" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-brand-900/90 text-white backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-md hover:scale-110 hover:shadow-[0_0_15px_rgba(59,170,92,0.4)] z-20">
-            <span class="material-symbols-outlined text-lg">chevron_left</span>
-          </button>
-          <button id="carousel-next" aria-label="Next Slide" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-brand-900/90 text-white backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-md hover:scale-110 hover:shadow-[0_0_15px_rgba(59,170,92,0.4)] z-20">
-            <span class="material-symbols-outlined text-lg">chevron_right</span>
-          </button>
-
-          <!-- Floating Info Overlay Card: "Panabo City Vegetable and Fruit Market" -->
-          <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-brand-100 flex items-center justify-between z-20">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-800 flex items-center justify-center font-bold">
-                <span class="material-symbols-outlined text-xl">storefront</span>
-              </div>
-              <div>
-                <p id="carousel-caption-title" class="text-xs font-bold text-brand-900">Panabo City Vegetable and Fruit Market</p>
-                <p class="text-[11px] text-gray-500 font-medium">Live Fresh Produce Batching Active</p>
-              </div>
-            </div>
-            
-            <div class="flex items-center gap-2">
-              <span id="carousel-counter" class="text-[11px] font-bold text-brand-800 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded-full">
-                01 / 04
-              </span>
-            </div>
-          </div>
-
-          <!-- 4 Dots Indicators -->
-          <div id="carousel-dots" class="absolute bottom-20 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
-            <button class="carousel-dot active-dot w-6 h-2 rounded-full bg-brand-900 shadow-md" onclick="goToSlide(0)"></button>
-            <button class="carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white shadow-md" onclick="goToSlide(1)"></button>
-            <button class="carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white shadow-md" onclick="goToSlide(2)"></button>
-            <button class="carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white shadow-md" onclick="goToSlide(3)"></button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- 3 Core Highlight Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
-          <span class="material-symbols-outlined text-2xl">percent</span>
-        </div>
-        <h3 class="text-lg font-bold text-brand-900 mb-2">Freshness-Based Discounts</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          Helping vendors recover costs through dynamic markdowns before fruits and vegetables reach their spoilage window.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
-          <span class="material-symbols-outlined text-2xl">receipt_long</span>
-        </div>
-        <h3 class="text-lg font-bold text-brand-900 mb-2">Product Reservations</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          Connecting vendors directly with budget-conscious household buyers and local food businesses seeking guaranteed daily fresh crates.
-        </p>
-      </div>
-
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
-          <span class="material-symbols-outlined text-2xl">recycling</span>
-        </div>
-        <h3 class="text-lg font-bold text-brand-900 mb-2">Hyperlocal Food Rescue</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          Ensuring safe, consumable, and imperfect produce is systematically salvaged every market morning and late afternoon cycle.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== OUR PROTOTYPE SECTION (3D PHONE + 25 SCREENS) ==================== -->
-  <section id="prototype" class="py-24 bg-[#f2f5ee] border-y border-brand-900/10 scroll-mt-20">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
-          <span class="material-symbols-outlined text-sm">devices</span>
-          PreServa Architecture & Design Blueprint
-        </div>
-        <h2 class="text-3xl sm:text-5xl font-extrabold text-brand-900 tracking-tight">Our Prototype</h2>
-        <p class="text-gray-600 mt-3 text-base">
-          Interactive System Showcase & Mobile Application Interface. Below is the complete 25-screen workflow designed for stall dispatch, buyer reservations, dynamic pricing, and inventory monitoring.
-        </p>
-      </div>
-
-      <!-- 3D Smartphone Frame -->
-      <div class="bg-white rounded-3xl p-8 border border-gray-200 shadow-md mb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center reveal hover:shadow-[0_0_30px_rgba(59,170,92,0.15)] transition-shadow duration-500">
-        <div class="lg:col-span-7 relative h-[520px] rounded-2xl bg-gradient-to-b from-[#eaf4ec] to-[#f4f9f4] flex items-center justify-center overflow-hidden border border-brand-100">
-          <div id="threejs-phone-container" class="w-full h-full"></div>
-
-          <!-- Interaction Hint -->
-          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-brand-900/80 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1.5 shadow-md pointer-events-none">
-            <span class="material-symbols-outlined text-sm">touch_app</span>
-            <span>Click & Drag device to rotate 360°</span>
-          </div>
-        </div>
-
-        <div class="lg:col-span-5 space-y-5">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold uppercase tracking-wider">
-            <span class="material-symbols-outlined text-sm">3d_rotation</span>
-            Interactive 3D Hardware & UI Showcase
-          </div>
-
-          <h3 class="text-3xl font-extrabold text-brand-900">Experience PreServa in 3D</h3>
-
-          <p class="text-sm text-gray-600 leading-relaxed">
-            Interact with the PreServa mobile application in real-time 3D space. Click and drag to inspect our intuitive vendor & buyer interface running directly on device hardware with a clean metallic rear chassis.
+          <p class="text-lg text-gray-700 max-w-xl leading-relaxed">
+            An agricultural technology platform designed to help local market vendors reduce food waste while making fresh and affordable produce accessible to the community.
           </p>
 
-          <div class="space-y-2 pt-2">
-            <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
-              <span>Auto-Rotating Ambient Motion with Physics Inertia</span>
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a href="#prototype" class="px-7 py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 text-white font-semibold text-base transition-all shadow-md shadow-brand-900/20 hover:shadow-[0_0_22px_rgba(20,83,45,0.35)] active:scale-95 flex items-center gap-2">
+              <span class="material-symbols-outlined">explore</span>
+              <span>Explore Prototype</span>
+            </a>
+            <a href="#about" class="px-7 py-3.5 rounded-full bg-white hover:bg-gray-50 text-brand-900 font-semibold text-base border border-gray-200 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(59,170,92,0.15)] active:scale-95 flex items-center gap-2">
+              <span>Learn More About Us</span>
+              <span class="material-symbols-outlined">arrow_downward</span>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
+            <div>
+              <div class="text-2xl font-black text-brand-900">100%</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">Consumable Produce</div>
             </div>
-            <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
-              <span>Click & Drag to Orbit 360° Horizontally & Vertically</span>
+            <div>
+              <div class="text-2xl font-black text-brand-900">Zero</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">Upfront Vendor Fee</div>
             </div>
-            <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
-              <span>Clean Forest Green Metallic Rear Panel</span>
-            </div>
-          </div>
-
-          <div class="pt-4 flex flex-wrap items-center gap-3">
-            <a href="#prototype-grid" class="px-6 py-3 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.4)] text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
-              <span class="material-symbols-outlined text-sm">schema</span>
-              <span>Inspect All Prototype Screens</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 25 Prototype Cards Grid -->
-      <div id="prototype-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-    </div>
-  </section>
-
-  <!-- ==================== ABOUT US SECTION ==================== -->
-  <section id="about" class="py-24 px-6 max-w-7xl mx-auto scroll-mt-20">
-    <div class="text-center max-w-3xl mx-auto mb-16 reveal">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-100 border border-brand-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
-        <span class="material-symbols-outlined text-sm">eco</span>
-        About the PreServa Vision
-      </div>
-      <h2 class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight">PRESERVA — Sell Fresh. Save More. Waste Less.</h2>
-      <div class="mt-6 space-y-4 text-gray-700 text-base leading-relaxed text-justify sm:text-center">
-        <p>
-          PRESERVA is an agricultural technology platform designed to help local market vendors reduce food waste while making fresh and affordable produce accessible to the community. It connects vendors with local buyers and businesses through freshness-based discounts, imperfect but safe produce listings, and product reservations.
-        </p>
-        <p>
-          Through PRESERVA, we aim to give unsold produce another opportunity to be sold instead of going to waste, helping vendors recover their costs and allowing buyers to enjoy affordable products.
-        </p>
-      </div>
-    </div>
-
-    <!-- Goal, Mission, Vision Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-      <div class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
-          <span class="material-symbols-outlined text-2xl">track_changes</span>
-        </div>
-        <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Target Milestone</span>
-        <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Goal</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          To reduce fruit and vegetable spoilage among local market vendors by providing an accessible platform where unsold and surplus produce can be sold at discounted prices before they spoil.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
-          <span class="material-symbols-outlined text-2xl">flag</span>
-        </div>
-        <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Our Mandate</span>
-        <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Mission</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          To connect local vendors, household buyers, and businesses through a convenient and affordable digital platform that promotes responsible purchasing, reduces food waste, and supports livelihoods.
-        </p>
-      </div>
-
-      <div class="p-8 rounded-3xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
-        <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
-          <span class="material-symbols-outlined text-2xl">visibility</span>
-        </div>
-        <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Long-Term Future</span>
-        <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Vision</h3>
-        <p class="text-sm text-gray-600 leading-relaxed">
-          To become a trusted agricultural technology platform that helps build a community where no good produce goes to waste, local vendors thrive, and everyone has access to affordable quality food.
-        </p>
-      </div>
-    </div>
-
-    <!-- Core Values -->
-    <div class="reveal">
-      <div class="text-center mb-10">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Guiding Principles</span>
-        <h3 class="text-3xl font-extrabold text-brand-900">Our Core Values</h3>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
-          <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">01</div>
-          <h4 class="text-lg font-bold text-brand-900 mb-1">Sustainability</h4>
-          <p class="text-xs text-gray-600">Promoting responsible consumption and reducing food waste.</p>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
-          <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">02</div>
-          <h4 class="text-lg font-bold text-brand-900 mb-1">Community Support</h4>
-          <p class="text-xs text-gray-600">Helping local vendors and buyers benefit from affordable produce.</p>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
-          <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">03</div>
-          <h4 class="text-lg font-bold text-brand-900 mb-1">Affordability</h4>
-          <p class="text-xs text-gray-600">Making quality and safe produce accessible at reasonable prices.</p>
-        </div>
-
-        <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
-          <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">04</div>
-          <h4 class="text-lg font-bold text-brand-900 mb-1">Responsibility</h4>
-          <p class="text-xs text-gray-600">Encouraging people to value food and avoid unnecessary waste.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== CONTACT US & TEAM SECTION ==================== -->
-  <section id="contact" class="py-24 bg-[#f2f5ee] border-t border-brand-900/10 scroll-mt-20">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
-          <span class="material-symbols-outlined text-sm">support_agent</span>
-          Get in Touch with PreServa
-        </div>
-        <h2 class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight">Team & Contact</h2>
-        <p class="text-gray-600 mt-3 text-base">
-          Have questions about PreServa or want to connect with our team? Feel free to reach out to us through our social media accounts or contact numbers.
-        </p>
-      </div>
-
-      <!-- Exactly 3 Team Profiles: Christian Francisco (CEO), M Jayross Cruspero (COO), Jhun Rey Flores (CMO) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-        
-        <!-- Christian Francisco (CEO) -->
-        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
-          <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
-            <img src="Christian.png" alt="Christian Francisco" class="w-full h-full object-cover" />
-          </div>
-          <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">CEO</span>
-          <h3 class="text-xl font-bold text-brand-900">Christian Francisco</h3>
-          <p class="text-xs font-semibold text-brand-600 mb-2">Chief Executive Officer (CEO)</p>
-          <p class="text-xs text-gray-500 mb-6">Spearheading organizational vision, strategic public market vendor partnerships, stakeholder alignment, and ecosystem execution.</p>
-
-          <div class="w-full space-y-2 mt-auto">
-            <a href="https://www.facebook.com/peppertian" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" />
-                <span>peppertian</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
-            </a>
-            <a href="tel:09637411495" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" />
-                <span>09637411495</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">call</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- M Jayross Cruspero (COO) -->
-        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
-          <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
-            <img src="MJ.png" alt="M Jayross Cruspero" class="w-full h-full object-cover" />
-          </div>
-          <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">COO</span>
-          <h3 class="text-xl font-bold text-brand-900">M Jayross Cruspero</h3>
-          <p class="text-xs font-semibold text-brand-600 mb-2">Chief Operating Officer (COO)</p>
-          <p class="text-xs text-gray-500 mb-6">Directing technical operations, live stall batch logic, market waste mapping algorithms, and platform workflow execution.</p>
-
-          <div class="w-full space-y-2 mt-auto">
-            <a href="https://www.facebook.com/mjay.cruspero.7/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" />
-                <span>mjay.cruspero.7</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
-            </a>
-            <a href="tel:09945493313" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" />
-                <span>09945493313</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">call</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Jhun Rey Flores (CMO) -->
-        <div class="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
-          <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
-            <img src="JR.jpg" alt="Jhun Rey Flores" class="w-full h-full object-cover" />
-          </div>
-          <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">CMO</span>
-          <h3 class="text-xl font-bold text-brand-900">Jhun Rey Flores</h3>
-          <p class="text-xs font-semibold text-brand-600 mb-2">Chief Marketing Officer (CMO)</p>
-          <p class="text-xs text-gray-500 mb-6">Leading vendor community outreach, public awareness campaigns, brand engagement, and market adoption growth.</p>
-
-          <div class="w-full space-y-2 mt-auto">
-            <a href="https://www.facebook.com/ewpoke" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" />
-                <span>ewpoke</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
-            </a>
-            <a href="tel:09631104216" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
-              <span class="flex items-center gap-2">
-                <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" />
-                <span>09631104216</span>
-              </span>
-              <span class="material-symbols-outlined text-sm text-gray-400">call</span>
-            </a>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Map & Form (Pantay & Equal Height) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-        
-        <!-- Left Card: Physical Institution & Research Lab (Map) -->
-        <div class="lg:col-span-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm reveal flex flex-col justify-between h-full">
-          <div>
-            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2">
-              <span class="material-symbols-outlined text-sm">location_on</span>
-              Physical Institution & Research Lab
-            </div>
-            <h3 class="text-2xl font-black text-brand-900 mb-2">You Can Find Us Here</h3>
-            <p class="text-xs text-gray-600 mb-4">
-              PreServa is a student startup project developed by BSIS students of Davao del Norte State College.
-            </p>
-
-            <div class="p-3.5 rounded-2xl bg-brand-50 border border-brand-200 mb-4 text-xs font-medium text-brand-900">
-              <strong>Davao del Norte State College (DNSC)</strong><br />
-              New Visayas, Panabo City, Davao del Norte, Philippines 8105
+            <div>
+              <div class="text-2xl font-black text-brand-900">Hyperlocal</div>
+              <div class="text-xs font-semibold text-gray-500 uppercase">Market Recovery</div>
             </div>
           </div>
-
-          <!-- Map Container -->
-          <div class="w-full h-64 lg:h-[270px] rounded-2xl overflow-hidden border border-gray-200 my-4 bg-gray-100 flex-grow shadow-inner">
-            <iframe 
-              src="https://maps.google.com/maps?q=Davao%20del%20Norte%20State%20College,%20Panabo%20City&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-              class="w-full h-full border-0" 
-              allowfullscreen="" 
-              loading="lazy">
-            </iframe>
-          </div>
-
-          <a href="https://www.google.com/maps/dir/?api=1&destination=Davao+del+Norte+State+College,+Panabo+City,+Davao+del+Norte,+Philippines" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.35)] text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm mt-auto">
-            <span class="material-symbols-outlined text-sm">navigation</span>
-            <span>Get Directions to DNSC</span>
-          </a>
         </div>
 
-        <!-- Right Card: Direct Dispatch (Form) -->
-        <div class="lg:col-span-6 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm reveal flex flex-col justify-between h-full">
-          <div>
-            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2">
-              <span class="material-symbols-outlined text-sm">send</span>
-              Direct Dispatch
+        <!-- Right Column: Carousel (pic1.png to pic4.png) -->
+        <div class="lg:col-span-5 relative reveal">
+          <div id="hero-carousel-container" class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-gray-900 h-[460px] group">
+            
+            <div class="carousel-slide active-slide">
+              <img src="pic1.png" alt="Panabo City Vegetable and Fruit Market" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
             </div>
-            <h3 class="text-2xl font-black text-brand-900 mb-2">Send PreServa a Message</h3>
-            <p class="text-xs text-gray-600 mb-6">
-              Are you a market vendor, commercial enterprise, or institutional reviewer? Leave us a direct inquiry below.
-            </p>
-          </div>
 
-          <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4 flex flex-col flex-grow justify-between">
-            <div class="space-y-4">
-              
-              <!-- Full Name Field -->
-              <div class="field-wrapper">
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-sm text-brand-600">person</span>
-                  <span>Full Name</span>
-                </label>
-                <input 
-                  type="text" 
-                  required 
-                  placeholder="e.g. Maria Santos" 
-                  class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm" 
-                />
+            <div class="carousel-slide">
+              <img src="pic2.png" alt="Panabo City Vegetable and Fruit Market" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
+            </div>
+
+            <div class="carousel-slide">
+              <img src="pic3.png" alt="Panabo City Vegetable and Fruit Market" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
+            </div>
+
+            <div class="carousel-slide">
+              <img src="pic4.png" alt="Panabo City Vegetable and Fruit Market" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none"></div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <button id="carousel-prev" aria-label="Previous Slide" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-brand-900/90 text-white backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-md hover:scale-110 hover:shadow-[0_0_15px_rgba(59,170,92,0.4)] z-20">
+              <span class="material-symbols-outlined text-lg">chevron_left</span>
+            </button>
+            <button id="carousel-next" aria-label="Next Slide" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-brand-900/90 text-white backdrop-blur-md flex items-center justify-center transition-all duration-300 shadow-md hover:scale-110 hover:shadow-[0_0_15px_rgba(59,170,92,0.4)] z-20">
+              <span class="material-symbols-outlined text-lg">chevron_right</span>
+            </button>
+
+            <!-- Floating Info Card -->
+            <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-brand-100 flex items-center justify-between z-20">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-800 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-xl">storefront</span>
+                </div>
+                <div>
+                  <p id="carousel-caption-title" class="text-xs font-bold text-brand-900">Panabo City Vegetable and Fruit Market</p>
+                  <p class="text-[11px] text-gray-500 font-medium">Live Fresh Produce Batching Active</p>
+                </div>
               </div>
+              
+              <div class="flex items-center gap-2">
+                <span id="carousel-counter" class="text-[11px] font-bold text-brand-800 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded-full">
+                  01 / 04
+                </span>
+              </div>
+            </div>
 
-              <!-- Email & Subject Fields -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Dots -->
+            <div id="carousel-dots" class="absolute bottom-20 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+              <button class="carousel-dot active-dot w-6 h-2 rounded-full bg-brand-900 shadow-md" onclick="goToSlide(0)"></button>
+              <button class="carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white shadow-md" onclick="goToSlide(1)"></button>
+              <button class="carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white shadow-md" onclick="goToSlide(2)"></button>
+              <button class="carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white shadow-md" onclick="goToSlide(3)"></button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Highlight Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+        <div class="p-6 rounded-2xl bg-white/90 backdrop-blur-sm border border-gray-200/90 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-2xl">percent</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">Freshness-Based Discounts</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Helping vendors recover costs through dynamic markdowns before fruits and vegetables reach their spoilage window.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white/90 backdrop-blur-sm border border-gray-200/90 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-2xl">receipt_long</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">Product Reservations</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Connecting vendors directly with budget-conscious household buyers and local food businesses seeking guaranteed daily fresh crates.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white/90 backdrop-blur-sm border border-gray-200/90 shadow-sm hover:shadow-[0_0_20px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-900 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-2xl">recycling</span>
+          </div>
+          <h3 class="text-lg font-bold text-brand-900 mb-2">Hyperlocal Food Rescue</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            Ensuring safe, consumable, and imperfect produce is systematically salvaged every market morning and late afternoon cycle.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== OUR PROTOTYPE SECTION ==================== -->
+    <section id="prototype" class="py-24 bg-[#f0f4ed]/80 backdrop-blur-md border-y border-brand-900/10 scroll-mt-20">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
+            <span class="material-symbols-outlined text-sm">devices</span>
+            PreServa Architecture & Design Blueprint
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-brand-900 tracking-tight">Our Prototype</h2>
+          <p class="text-gray-600 mt-3 text-base">
+            Interactive System Showcase & Mobile Application Interface. Below is the complete 25-screen workflow designed for stall dispatch, buyer reservations, dynamic pricing, and inventory monitoring.
+          </p>
+        </div>
+
+        <!-- 3D Smartphone Frame -->
+        <div class="bg-white rounded-3xl p-8 border border-gray-200 shadow-md mb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center reveal hover:shadow-[0_0_30px_rgba(59,170,92,0.15)] transition-shadow duration-500">
+          <div class="lg:col-span-7 relative h-[520px] rounded-2xl bg-gradient-to-b from-[#eaf4ec] to-[#f4f9f4] flex items-center justify-center overflow-hidden border border-brand-100">
+            <div id="threejs-phone-container" class="w-full h-full"></div>
+
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-brand-900/80 backdrop-blur-md text-white text-xs font-semibold flex items-center gap-1.5 shadow-md pointer-events-none">
+              <span class="material-symbols-outlined text-sm">touch_app</span>
+              <span>Click & Drag device to rotate 360°</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-5">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold uppercase tracking-wider">
+              <span class="material-symbols-outlined text-sm">3d_rotation</span>
+              Interactive 3D Hardware & UI Showcase
+            </div>
+
+            <h3 class="text-3xl font-extrabold text-brand-900">Experience PreServa in 3D</h3>
+
+            <p class="text-sm text-gray-600 leading-relaxed">
+              Interact with the PreServa mobile application in real-time 3D space. Click and drag to inspect our intuitive vendor & buyer interface running directly on device hardware with a clean metallic rear chassis.
+            </p>
+
+            <div class="space-y-2 pt-2">
+              <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
+                <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
+                <span>Auto-Rotating Ambient Motion with Physics Inertia</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
+                <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
+                <span>Click & Drag to Orbit 360° Horizontally & Vertically</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
+                <span class="material-symbols-outlined text-brand-600 text-base">check_circle</span>
+                <span>Clean Forest Green Metallic Rear Panel</span>
+              </div>
+            </div>
+
+            <div class="pt-4 flex flex-wrap items-center gap-3">
+              <a href="#prototype-grid" class="px-6 py-3 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.4)] text-white text-xs font-bold transition-all shadow-md flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">schema</span>
+                <span>Inspect All Prototype Screens</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 25 Prototype Cards Grid -->
+        <div id="prototype-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- ==================== ABOUT US SECTION ==================== -->
+    <section id="about" class="py-24 px-6 max-w-7xl mx-auto scroll-mt-20">
+      <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-100 border border-brand-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
+          <span class="material-symbols-outlined text-sm">eco</span>
+          About the PreServa Vision
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight">PRESERVA — Sell Fresh. Save More. Waste Less.</h2>
+        <div class="mt-6 space-y-4 text-gray-700 text-base leading-relaxed text-justify sm:text-center">
+          <p>
+            PRESERVA is an agricultural technology platform designed to help local market vendors reduce food waste while making fresh and affordable produce accessible to the community. It connects vendors with local buyers and businesses through freshness-based discounts, imperfect but safe produce listings, and product reservations.
+          </p>
+          <p>
+            Through PRESERVA, we aim to give unsold produce another opportunity to be sold instead of going to waste, helping vendors recover their costs and allowing buyers to enjoy affordable products.
+          </p>
+        </div>
+      </div>
+
+      <!-- Goal, Mission, Vision Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <div class="p-8 rounded-3xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-2xl">track_changes</span>
+          </div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Target Milestone</span>
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Goal</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To reduce fruit and vegetable spoilage among local market vendors by providing an accessible platform where unsold and surplus produce can be sold at discounted prices before they spoil.
+          </p>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-2xl">flag</span>
+          </div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Our Mandate</span>
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Mission</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To connect local vendors, household buyers, and businesses through a convenient and affordable digital platform that promotes responsible purchasing, reduces food waste, and supports livelihoods.
+          </p>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.2)] hover:-translate-y-1.5 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-900 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-2xl">visibility</span>
+          </div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-1">Long-Term Future</span>
+          <h3 class="text-2xl font-bold text-brand-900 mb-3">Our Vision</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">
+            To become a trusted agricultural technology platform that helps build a community where no good produce goes to waste, local vendors thrive, and everyone has access to affordable quality food.
+          </p>
+        </div>
+      </div>
+
+      <!-- Core Values -->
+      <div class="reveal">
+        <div class="text-center mb-10">
+          <span class="text-xs font-bold uppercase tracking-widest text-brand-600">Guiding Principles</span>
+          <h3 class="text-3xl font-extrabold text-brand-900">Our Core Values</h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="p-6 rounded-2xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
+            <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">01</div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">Sustainability</h4>
+            <p class="text-xs text-gray-600">Promoting responsible consumption and reducing food waste.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
+            <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">02</div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">Community Support</h4>
+            <p class="text-xs text-gray-600">Helping local vendors and buyers benefit from affordable produce.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
+            <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">03</div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">Affordability</h4>
+            <p class="text-xs text-gray-600">Making quality and safe produce accessible at reasonable prices.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white/95 backdrop-blur-sm border border-gray-200 shadow-sm hover:shadow-[0_0_18px_rgba(59,170,92,0.18)] hover:-translate-y-1 transition-all">
+            <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-900 font-bold flex items-center justify-center text-xs mb-3">04</div>
+            <h4 class="text-lg font-bold text-brand-900 mb-1">Responsibility</h4>
+            <p class="text-xs text-gray-600">Encouraging people to value food and avoid unnecessary waste.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CONTACT US & TEAM SECTION ==================== -->
+    <section id="contact" class="py-24 bg-[#f0f4ed]/80 backdrop-blur-md border-t border-brand-900/10 scroll-mt-20">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-300 text-xs font-bold text-brand-800 uppercase tracking-wider mb-3 shadow-[0_0_10px_rgba(59,170,92,0.1)]">
+            <span class="material-symbols-outlined text-sm">support_agent</span>
+            Get in Touch with PreServa
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-black text-brand-900 tracking-tight">Team & Contact</h2>
+          <p class="text-gray-600 mt-3 text-base">
+            Have questions about PreServa or want to connect with our team? Feel free to reach out to us through our social media accounts or contact numbers.
+          </p>
+        </div>
+
+        <!-- Exactly 3 Team Profiles: Christian Francisco (CEO), M Jayross Cruspero (COO), Jhun Rey Flores (CMO) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          
+          <!-- Christian Francisco (CEO) -->
+          <div class="bg-white/95 backdrop-blur-sm rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
+            <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
+              <img src="Christian.png" alt="Christian Francisco" class="w-full h-full object-cover" />
+            </div>
+            <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">CEO</span>
+            <h3 class="text-xl font-bold text-brand-900">Christian Francisco</h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">Chief Executive Officer (CEO)</p>
+            <p class="text-xs text-gray-500 mb-6">Spearheading organizational vision, strategic public market vendor partnerships, stakeholder alignment, and ecosystem execution.</p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a href="https://www.facebook.com/peppertian" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
+                <span class="flex items-center gap-2">
+                  <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" />
+                  <span>peppertian</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
+              </a>
+              <a href="tel:09637411495" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
+                <span class="flex items-center gap-2">
+                  <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" />
+                  <span>09637411495</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400">call</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- M Jayross Cruspero (COO) -->
+          <div class="bg-white/95 backdrop-blur-sm rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
+            <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
+              <img src="MJ.png" alt="M Jayross Cruspero" class="w-full h-full object-cover" />
+            </div>
+            <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">COO</span>
+            <h3 class="text-xl font-bold text-brand-900">M Jayross Cruspero</h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">Chief Operating Officer (COO)</p>
+            <p class="text-xs text-gray-500 mb-6">Directing technical operations, live stall batch logic, market waste mapping algorithms, and platform workflow execution.</p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a href="https://www.facebook.com/mjay.cruspero.7/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
+                <span class="flex items-center gap-2">
+                  <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" />
+                  <span>mjay.cruspero.7</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
+              </a>
+              <a href="tel:09945493313" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
+                <span class="flex items-center gap-2">
+                  <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" />
+                  <span>09945493313</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400">call</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Jhun Rey Flores (CMO) -->
+          <div class="bg-white/95 backdrop-blur-sm rounded-3xl p-6 border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col items-center text-center reveal">
+            <div class="w-28 h-28 rounded-2xl overflow-hidden mb-4 shadow-md bg-gray-100 border-2 border-brand-100">
+              <img src="JR.jpg" alt="Jhun Rey Flores" class="w-full h-full object-cover" />
+            </div>
+            <span class="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-100 text-brand-800 uppercase tracking-wider mb-2">CMO</span>
+            <h3 class="text-xl font-bold text-brand-900">Jhun Rey Flores</h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2">Chief Marketing Officer (CMO)</p>
+            <p class="text-xs text-gray-500 mb-6">Leading vendor community outreach, public awareness campaigns, brand engagement, and market adoption growth.</p>
+
+            <div class="w-full space-y-2 mt-auto">
+              <a href="https://www.facebook.com/ewpoke" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
+                <span class="flex items-center gap-2">
+                  <img src="Facebook.png" alt="Facebook" class="w-4 h-4 object-contain" />
+                  <span>ewpoke</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400">open_in_new</span>
+              </a>
+              <a href="tel:09631104216" class="w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-xs font-semibold text-gray-800 flex items-center justify-between transition-colors">
+                <span class="flex items-center gap-2">
+                  <img src="phone.png" alt="Phone" class="w-4 h-4 object-contain" />
+                  <span>09631104216</span>
+                </span>
+                <span class="material-symbols-outlined text-sm text-gray-400">call</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Map & Form (Pantay & Equal Height) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          <!-- Left Card: Physical Institution & Research Lab (Map) -->
+          <div class="lg:col-span-6 bg-white/95 backdrop-blur-sm p-8 rounded-3xl border border-gray-200 shadow-sm reveal flex flex-col justify-between h-full">
+            <div>
+              <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2">
+                <span class="material-symbols-outlined text-sm">location_on</span>
+                Physical Institution & Research Lab
+              </div>
+              <h3 class="text-2xl font-black text-brand-900 mb-2">You Can Find Us Here</h3>
+              <p class="text-xs text-gray-600 mb-4">
+                PreServa is a student startup project developed by BSIS students of Davao del Norte State College.
+              </p>
+
+              <div class="p-3.5 rounded-2xl bg-brand-50/80 border border-brand-200 mb-4 text-xs font-medium text-brand-900">
+                <strong>Davao del Norte State College (DNSC)</strong><br />
+                New Visayas, Panabo City, Davao del Norte, Philippines 8105
+              </div>
+            </div>
+
+            <div class="w-full h-64 lg:h-[270px] rounded-2xl overflow-hidden border border-gray-200 my-4 bg-gray-100 flex-grow shadow-inner">
+              <iframe 
+                src="https://maps.google.com/maps?q=Davao%20del%20Norte%20State%20College,%20Panabo%20City&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                class="w-full h-full border-0" 
+                allowfullscreen="" 
+                loading="lazy">
+              </iframe>
+            </div>
+
+            <a href="https://www.google.com/maps/dir/?api=1&destination=Davao+del+Norte+State+College,+Panabo+City,+Davao+del+Norte,+Philippines" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_20px_rgba(20,83,45,0.35)] text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm mt-auto">
+              <span class="material-symbols-outlined text-sm">navigation</span>
+              <span>Get Directions to DNSC</span>
+            </a>
+          </div>
+
+          <!-- Right Card: Direct Dispatch (Form) -->
+          <div class="lg:col-span-6 bg-white/95 backdrop-blur-sm p-8 rounded-3xl border border-gray-200 shadow-sm reveal flex flex-col justify-between h-full">
+            <div>
+              <div class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-800 uppercase tracking-wider mb-2">
+                <span class="material-symbols-outlined text-sm">send</span>
+                Direct Dispatch
+              </div>
+              <h3 class="text-2xl font-black text-brand-900 mb-2">Send PreServa a Message</h3>
+              <p class="text-xs text-gray-600 mb-6">
+                Are you a market vendor, commercial enterprise, or institutional reviewer? Leave us a direct inquiry below.
+              </p>
+            </div>
+
+            <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4 flex flex-col flex-grow justify-between">
+              <div class="space-y-4">
+                
                 <div class="field-wrapper">
                   <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm text-brand-600">alternate_email</span>
-                    <span>Email / Phone</span>
+                    <span class="material-symbols-outlined text-sm text-brand-600">person</span>
+                    <span>Full Name</span>
                   </label>
                   <input 
                     type="text" 
                     required 
-                    placeholder="name@domain.com or 09..." 
+                    placeholder="e.g. Maria Santos" 
                     class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm" 
                   />
                 </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="field-wrapper">
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-sm text-brand-600">alternate_email</span>
+                      <span>Email / Phone</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      required 
+                      placeholder="name@domain.com or 09..." 
+                      class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm" 
+                    />
+                  </div>
+                  <div class="field-wrapper">
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-sm text-brand-600">category</span>
+                      <span>Subject</span>
+                    </label>
+                    <select class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm bg-white cursor-pointer">
+                      <option>General Inquiry</option>
+                      <option>Vendor Participation</option>
+                      <option>Bulk Buyer Partnership</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div class="field-wrapper">
                   <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm text-brand-600">category</span>
-                    <span>Subject</span>
+                    <span class="material-symbols-outlined text-sm text-brand-600">chat</span>
+                    <span>Your Message</span>
                   </label>
-                  <select class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm bg-white cursor-pointer">
-                    <option>General Inquiry</option>
-                    <option>Vendor Participation</option>
-                    <option>Bulk Buyer Partnership</option>
-                  </select>
+                  <textarea 
+                    rows="4" 
+                    required 
+                    placeholder="Detail your question, vendor stall location, or collaboration request..." 
+                    class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm resize-none"
+                  ></textarea>
                 </div>
               </div>
 
-              <!-- Message Field -->
-              <div class="field-wrapper">
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5 transition-colors flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-sm text-brand-600">chat</span>
-                  <span>Your Message</span>
-                </label>
-                <textarea 
-                  rows="4" 
-                  required 
-                  placeholder="Detail your question, vendor stall location, or collaboration request..." 
-                  class="glowing-field w-full px-4 py-2.5 rounded-xl text-sm resize-none"
-                ></textarea>
-              </div>
+              <button 
+                type="submit" 
+                class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_24px_rgba(20,83,45,0.4)] text-white font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-md mt-4"
+              >
+                <span class="material-symbols-outlined text-base">send</span>
+                <span>Submit Inquiry</span>
+              </button>
+            </form>
+
+            <div id="form-success" class="hidden mt-4 p-4 rounded-xl bg-green-100 border border-green-300 text-green-900 text-xs font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(59,170,92,0.2)]">
+              <span class="material-symbols-outlined text-green-700">check_circle</span>
+              <span>Thank you! Your message has been sent to the PreServa team.</span>
             </div>
-
-            <!-- Glowing Submit Button -->
-            <button 
-              type="submit" 
-              class="w-full py-3.5 rounded-full bg-brand-900 hover:bg-brand-800 hover:shadow-[0_0_24px_rgba(20,83,45,0.4)] text-white font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 shadow-md mt-4"
-            >
-              <span class="material-symbols-outlined text-base">send</span>
-              <span>Submit Inquiry</span>
-            </button>
-          </form>
-
-          <div id="form-success" class="hidden mt-4 p-4 rounded-xl bg-green-100 border border-green-300 text-green-900 text-xs font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(59,170,92,0.2)]">
-            <span class="material-symbols-outlined text-green-700">check_circle</span>
-            <span>Thank you! Your message has been sent to the PreServa team.</span>
           </div>
+
         </div>
-
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ==================== FOOTER (CENTERED & STACKED) ==================== -->
-  <footer class="bg-white border-t border-gray-200 py-12 px-6">
-    <div class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-6">
-      
-      <!-- Vertically Stacked Branding Block -->
-      <div class="flex flex-col items-center justify-center text-center gap-3">
-        <img 
-          src="onlylogo.png" 
-          alt="PreServa Logo" 
-          class="w-12 h-12 object-contain mx-auto transition-transform hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(59,170,92,0.4)]" 
-        />
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-white/95 backdrop-blur-md border-t border-gray-200 py-12 px-6">
+      <div class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-6">
         
-        <div class="flex items-center justify-center gap-2">
-          <span class="text-base font-black text-brand-900 tracking-tight">PreServa</span>
-          <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-100 text-brand-800 uppercase tracking-wider">
-            Agri-Tech Platform
-          </span>
+        <div class="flex flex-col items-center justify-center text-center gap-3">
+          <img 
+            src="onlylogo.png" 
+            alt="PreServa Logo" 
+            class="w-12 h-12 object-contain mx-auto transition-transform hover:scale-110 hover:drop-shadow-[0_0_12px_rgba(59,170,92,0.4)]" 
+          />
+          
+          <div class="flex items-center justify-center gap-2">
+            <span class="text-base font-black text-brand-900 tracking-tight">PreServa</span>
+            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand-100 text-brand-800 uppercase tracking-wider">
+              Agri-Tech Platform
+            </span>
+          </div>
+
+          <p class="text-xs text-gray-500 max-w-md mx-auto leading-relaxed">
+            © 2026 PreServa. Connecting vendors, buyers, and communities for zero food waste.
+          </p>
         </div>
 
-        <p class="text-xs text-gray-500 max-w-md mx-auto leading-relaxed">
-          © 2026 PreServa. Connecting vendors, buyers, and communities for zero food waste.
-        </p>
+        <nav class="flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-gray-600">
+          <a href="#home" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Home</a>
+          <a href="#prototype" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Our Prototype</a>
+          <a href="#about" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">About Us</a>
+          <a href="#contact" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Contact Us</a>
+        </nav>
+
       </div>
+    </footer>
 
-      <!-- Navigation Links -->
-      <nav class="flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-gray-600">
-        <a href="#home" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Home</a>
-        <a href="#prototype" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Our Prototype</a>
-        <a href="#about" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">About Us</a>
-        <a href="#contact" class="hover:text-brand-900 transition-colors py-1 px-2 rounded-full hover:bg-brand-50">Contact Us</a>
-      </nav>
-
-    </div>
-  </footer>
+  </div>
 
   <!-- ==================== PROTOTYPE LIGHTBOX MODAL ==================== -->
   <div id="lightbox-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -776,8 +822,232 @@
     </div>
   </div>
 
-  <!-- ==================== JAVASCRIPT: CLEAN 4-PHOTO CAROUSEL + 3D PHONE + 25 SCREENS ==================== -->
+  <!-- ==================== JAVASCRIPTS ==================== -->
   <script>
+    // ==================== 0. INTERACTIVE DRAGGABLE & THROWABLE VEGGIE PHYSICS ====================
+    (function initDraggableVeggiePhysics() {
+      const canvas = document.getElementById('floating-veggie-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w, h;
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Diverse local agricultural produce SVG icons rendered into fast offscreen images
+      const veggieSVGs = [
+        // Tomato 🍅
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="56" r="36" fill="#e53935"/><circle cx="42" cy="46" r="10" fill="#ef5350" opacity="0.6"/><path d="M50 20 C48 10 52 8 50 4" stroke="#2e7d32" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M50 20 Q35 12 28 22 Q40 24 48 24 Q50 12 50 20 Q52 12 60 22 Q58 24 52 24 Q65 15 72 22 Q60 24 50 20 Z" fill="#43a047"/></svg>`,
+        // Eggplant 🍆
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M30 35 C20 55 35 88 55 85 C75 82 85 60 70 40 C60 25 45 20 38 28 Z" fill="#5e35b1"/><path d="M38 28 C45 20 50 22 55 15 C58 10 52 8 50 4" stroke="#2e7d32" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M38 28 Q44 32 46 22 Q52 30 58 24 Q54 34 62 34 Q50 36 38 28 Z" fill="#43a047"/></svg>`,
+        // Mango 🥭
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M32 30 C15 50 25 80 50 85 C75 90 85 70 82 50 C80 30 65 18 45 22 C38 24 35 28 32 30 Z" fill="#fbc02d"/><path d="M32 30 C24 45 28 70 48 76" stroke="#f57f17" stroke-width="3" fill="none" opacity="0.4"/><path d="M45 22 C44 14 48 10 46 4" stroke="#5d4037" stroke-width="4" stroke-linecap="round" fill="none"/><path d="M46 16 Q60 12 64 20 Q54 22 46 16 Z" fill="#388e3c"/></svg>`,
+        // Carrot 🥕
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M45 25 L65 30 L55 88 Z" fill="#f4511e"/><ellipse cx="55" cy="28" rx="11" ry="5" fill="#e64a19"/><path d="M55 25 Q62 10 70 8 Q62 16 57 24 Q55 8 50 5 Q52 14 55 25 Q45 10 38 8 Q46 16 53 24 Z" fill="#43a047"/><line x1="48" y1="45" x2="58" y2="46" stroke="#d84315" stroke-width="2" stroke-linecap="round"/><line x1="50" y1="60" x2="58" y2="61" stroke="#d84315" stroke-width="2" stroke-linecap="round"/></svg>`,
+        // Fresh Leaf / Sprout 🌿
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M25 75 Q40 40 75 25 Q70 65 35 75 Z" fill="#43a047"/><path d="M25 75 Q48 52 75 25" stroke="#2e7d32" stroke-width="3" fill="none"/><path d="M42 58 Q32 50 34 44" stroke="#2e7d32" stroke-width="2" fill="none"/><path d="M54 46 Q46 38 48 32" stroke="#2e7d32" stroke-width="2" fill="none"/></svg>`,
+        // Ampalaya / Bittergourd 🥒
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M28 35 C20 52 30 75 48 85 C65 75 75 52 68 35 C60 22 36 22 28 35 Z" fill="#2e7d32"/><ellipse cx="48" cy="45" rx="6" ry="12" fill="#388e3c" opacity="0.6"/><ellipse cx="36" cy="55" rx="4" ry="8" fill="#388e3c" opacity="0.6"/><ellipse cx="60" cy="55" rx="4" ry="8" fill="#388e3c" opacity="0.6"/><path d="M48 24 C48 15 52 10 50 4" stroke="#1b5e20" stroke-width="4" stroke-linecap="round" fill="none"/></svg>`
+      ];
+
+      const loadedImages = [];
+      let loadedCount = 0;
+      veggieSVGs.forEach(svgStr => {
+        const img = new Image();
+        img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgStr);
+        img.onload = () => {
+          loadedCount++;
+        };
+        loadedImages.push(img);
+      });
+
+      // Physics Items List
+      const veggies = [];
+      const count = Math.max(12, Math.floor(window.innerWidth / 120));
+
+      for (let i = 0; i < count; i++) {
+        veggies.push({
+          x: Math.random() * (window.innerWidth - 100) + 50,
+          y: Math.random() * (window.innerHeight - 100) + 50,
+          vx: (Math.random() - 0.5) * 0.9,
+          vy: (Math.random() - 0.5) * 0.9,
+          baseVy: (Math.random() - 0.5) * 0.4,
+          baseVx: (Math.random() - 0.5) * 0.4,
+          size: Math.random() * 26 + 48, // 48px to 74px
+          rotation: Math.random() * Math.PI * 2,
+          vRot: (Math.random() - 0.5) * 0.02,
+          opacity: Math.random() * 0.35 + 0.5, // 0.5 to 0.85 opacity for depth
+          floatAngle: Math.random() * Math.PI * 2,
+          floatSpeed: Math.random() * 0.02 + 0.01,
+          type: i % veggieSVGs.length,
+          isDragging: false
+        });
+      }
+
+      // Dragging & Throwing State Variables
+      let draggedItem = null;
+      let dragOffsetX = 0;
+      let dragOffsetY = 0;
+      let lastPointerX = 0;
+      let lastPointerY = 0;
+      let pointerVelocityX = 0;
+      let pointerVelocityY = 0;
+      let lastTime = performance.now();
+
+      function getPointerPos(e) {
+        if (e.touches && e.touches.length > 0) {
+          return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+        return { x: e.clientX, y: e.clientY };
+      }
+
+      function onDown(e) {
+        const pos = getPointerPos(e);
+        lastPointerX = pos.x;
+        lastPointerY = pos.y;
+        lastTime = performance.now();
+        pointerVelocityX = 0;
+        pointerVelocityY = 0;
+
+        // Check if pointer hit any vegetable (prioritize topmost/larger items)
+        for (let i = veggies.length - 1; i >= 0; i--) {
+          const v = veggies[i];
+          const radius = v.size / 2;
+          const dx = pos.x - v.x;
+          const dy = pos.y - v.y;
+          if (dx * dx + dy * dy <= radius * radius * 1.3) {
+            draggedItem = v;
+            v.isDragging = true;
+            dragOffsetX = dx;
+            dragOffsetY = dy;
+            v.vx = 0;
+            v.vy = 0;
+            canvas.style.cursor = 'grabbing';
+            break;
+          }
+        }
+      }
+
+      function onMove(e) {
+        const pos = getPointerPos(e);
+        const now = performance.now();
+        const dt = Math.max(1, now - lastTime);
+
+        // Calculate fling throw velocity
+        pointerVelocityX = (pos.x - lastPointerX) / dt * 18;
+        pointerVelocityY = (pos.y - lastPointerY) / dt * 18;
+
+        lastPointerX = pos.x;
+        lastPointerY = pos.y;
+        lastTime = now;
+
+        if (draggedItem) {
+          draggedItem.x = pos.x - dragOffsetX;
+          draggedItem.y = pos.y - dragOffsetY;
+        } else {
+          // Hover effect cursor
+          let hovering = false;
+          for (let i = 0; i < veggies.length; i++) {
+            const v = veggies[i];
+            const radius = v.size / 2;
+            const dx = pos.x - v.x;
+            const dy = pos.y - v.y;
+            if (dx * dx + dy * dy <= radius * radius) {
+              hovering = true;
+              break;
+            }
+          }
+          canvas.style.cursor = hovering ? 'grab' : 'default';
+        }
+      }
+
+      function onUp() {
+        if (draggedItem) {
+          draggedItem.isDragging = false;
+          // Apply throw velocity with capped maximums
+          draggedItem.vx = Math.max(-24, Math.min(24, pointerVelocityX));
+          draggedItem.vy = Math.max(-24, Math.min(24, pointerVelocityY));
+          draggedItem.vRot = (Math.random() - 0.5) * 0.15;
+          draggedItem = null;
+          canvas.style.cursor = 'default';
+        }
+      }
+
+      window.addEventListener('mousedown', onDown);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+
+      window.addEventListener('touchstart', onDown, { passive: true });
+      window.addEventListener('touchmove', onMove, { passive: true });
+      window.addEventListener('touchend', onUp);
+
+      // Physics Render Loop
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+
+        veggies.forEach(v => {
+          if (!v.isDragging) {
+            // Apply air resistance / friction so thrown objects smoothly settle back into floating
+            v.vx *= 0.965;
+            v.vy *= 0.965;
+
+            // Ambient gentle floating drift
+            v.floatAngle += v.floatSpeed;
+            const ambientDriftY = Math.sin(v.floatAngle) * 0.45;
+            const ambientDriftX = Math.cos(v.floatAngle * 0.8) * 0.3;
+
+            v.x += v.vx + ambientDriftX + v.baseVx;
+            v.y += v.vy + ambientDriftY + v.baseVy;
+            v.rotation += v.vRot;
+
+            // Bounce smoothly off viewport boundaries
+            const radius = v.size / 2;
+            if (v.x < radius) {
+              v.x = radius;
+              v.vx = -v.vx * 0.75;
+            } else if (v.x > w - radius) {
+              v.x = w - radius;
+              v.vx = -v.vx * 0.75;
+            }
+
+            if (v.y < radius) {
+              v.y = radius;
+              v.vy = -v.vy * 0.75;
+            } else if (v.y > h - radius) {
+              v.y = h - radius;
+              v.vy = -v.vy * 0.75;
+            }
+          }
+
+          // Draw the vegetable with soft shadow and rotation
+          ctx.save();
+          ctx.translate(v.x, v.y);
+          ctx.rotate(v.rotation);
+          ctx.globalAlpha = v.opacity;
+
+          // Soft ambient drop-shadow underneath the fruit/veggie
+          ctx.shadowColor = 'rgba(20, 83, 45, 0.18)';
+          ctx.shadowBlur = v.isDragging ? 22 : 12;
+          ctx.shadowOffsetY = v.isDragging ? 16 : 8;
+
+          const img = loadedImages[v.type];
+          if (img && img.complete) {
+            const drawSize = v.isDragging ? v.size * 1.15 : v.size;
+            ctx.drawImage(img, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
+          }
+
+          ctx.restore();
+        });
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
     // ==================== 1. HERO PHOTO CAROUSEL ====================
     const slides = document.querySelectorAll('.carousel-slide');
     const dots = document.querySelectorAll('.carousel-dot');
@@ -789,7 +1059,7 @@
     const defaultCaption = 'Panabo City Vegetable and Fruit Market';
 
     let currentSlide = 0;
-    const totalSlides = slides.length; // 4 slides
+    const totalSlides = slides.length;
     let carouselTimer = null;
 
     function showSlide(index) {
@@ -798,71 +1068,34 @@
       else currentSlide = index;
 
       slides.forEach((slide, idx) => {
-        if (idx === currentSlide) {
-          slide.classList.add('active-slide');
-        } else {
-          slide.classList.remove('active-slide');
-        }
+        if (idx === currentSlide) slide.classList.add('active-slide');
+        else slide.classList.remove('active-slide');
       });
 
       dots.forEach((dot, idx) => {
-        if (idx === currentSlide) {
-          dot.className = 'carousel-dot active-dot w-6 h-2 rounded-full bg-brand-900 shadow-md';
-        } else {
-          dot.className = 'carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white shadow-md';
-        }
+        if (idx === currentSlide) dot.className = 'carousel-dot active-dot w-6 h-2 rounded-full bg-brand-900 shadow-md';
+        else dot.className = 'carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white shadow-md';
       });
 
-      if (counterEl) {
-        counterEl.innerText = `${String(currentSlide + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
-      }
-      if (captionEl) {
-        captionEl.innerText = defaultCaption;
-      }
+      if (counterEl) counterEl.innerText = `${String(currentSlide + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+      if (captionEl) captionEl.innerText = defaultCaption;
     }
 
-    function nextSlide() {
-      showSlide(currentSlide + 1);
-    }
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+    function goToSlide(index) { showSlide(index); restartCarouselTimer(); }
 
-    function prevSlide() {
-      showSlide(currentSlide - 1);
-    }
+    function startCarouselTimer() { carouselTimer = setInterval(nextSlide, 4000); }
+    function restartCarouselTimer() { clearInterval(carouselTimer); startCarouselTimer(); }
 
-    function goToSlide(index) {
-      showSlide(index);
-      restartCarouselTimer();
-    }
-
-    function startCarouselTimer() {
-      carouselTimer = setInterval(nextSlide, 4000);
-    }
-
-    function restartCarouselTimer() {
-      clearInterval(carouselTimer);
-      startCarouselTimer();
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        nextSlide();
-        restartCarouselTimer();
-      });
-    }
-
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        prevSlide();
-        restartCarouselTimer();
-      });
-    }
+    if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); restartCarouselTimer(); });
+    if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); restartCarouselTimer(); });
 
     const carouselBox = document.getElementById('hero-carousel-container');
     if (carouselBox) {
       carouselBox.addEventListener('mouseenter', () => clearInterval(carouselTimer));
       carouselBox.addEventListener('mouseleave', () => startCarouselTimer());
     }
-
     startCarouselTimer();
 
     // ==================== 2. 25 PROTOTYPE SCREENS BLUEPRINT ====================
@@ -898,7 +1131,7 @@
     prototypeScreens.forEach((screen) => {
       const slotNum = String(screen.id).padStart(2, '0');
       const card = document.createElement('div');
-      card.className = `prototype-card reveal p-5 rounded-3xl bg-white border border-gray-200/90 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.22)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col group cursor-pointer`;
+      card.className = `prototype-card reveal p-5 rounded-3xl bg-white/95 backdrop-blur-sm border border-gray-200/90 shadow-sm hover:shadow-[0_0_24px_rgba(59,170,92,0.22)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col group cursor-pointer`;
       card.onclick = () => openModal(screen);
 
       card.innerHTML = `
@@ -1000,20 +1233,17 @@
       const phoneMesh = new THREE.Mesh(bodyGeom, bodyMaterial);
       phoneGroup.add(phoneMesh);
 
-      // FRONT SCREEN FACE
       const screenGeom = new THREE.PlaneGeometry(phoneWidth * 0.94, phoneHeight * 0.95);
       const screenMesh = new THREE.Mesh(screenGeom, screenMaterial);
       screenMesh.position.z = (phoneDepth / 2) + 0.005;
       phoneGroup.add(screenMesh);
 
-      // Dynamic Island Pill Notch
       const pillGeom = new THREE.PlaneGeometry(0.75, 0.16);
       const pillMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
       const pillMesh = new THREE.Mesh(pillGeom, pillMat);
       pillMesh.position.set(0, phoneHeight * 0.44, (phoneDepth / 2) + 0.01);
       phoneGroup.add(pillMesh);
 
-      // BACK PANEL
       const backGeom = new THREE.PlaneGeometry(phoneWidth * 0.92, phoneHeight * 0.92);
       const backMaterial = new THREE.MeshStandardMaterial({
         color: 0x184227,
@@ -1025,14 +1255,12 @@
       backMesh.position.z = -(phoneDepth / 2) - 0.005;
       phoneGroup.add(backMesh);
 
-      // Camera Bump
       const bumpGeom = new THREE.BoxGeometry(1.2, 1.2, 0.12);
       const bumpMaterial = new THREE.MeshStandardMaterial({ color: 0x0f2917, roughness: 0.3, metalness: 0.7 });
       const bumpMesh = new THREE.Mesh(bumpGeom, bumpMaterial);
       bumpMesh.position.set(phoneWidth * 0.22, phoneHeight * 0.32, -(phoneDepth / 2) - 0.06);
       phoneGroup.add(bumpMesh);
 
-      // 3 Camera Lenses
       const lensGeom = new THREE.CylinderGeometry(0.22, 0.22, 0.16, 24);
       const lensMat = new THREE.MeshStandardMaterial({ color: 0x050806, roughness: 0.1, metalness: 0.95 });
       lensGeom.rotateX(Math.PI / 2);
@@ -1100,15 +1328,15 @@
         renderer.setSize(w, h);
       });
 
-      const animate = () => {
-        requestAnimationFrame(animate);
+      const animatePhone = () => {
+        requestAnimationFrame(animatePhone);
         if (autoRotate && !isDragging) {
           phoneGroup.rotation.y += 0.009;
           phoneGroup.position.y = Math.sin(Date.now() * 0.002) * 0.12;
         }
         renderer.render(scene, camera);
       };
-      animate();
+      animatePhone();
     })();
 
     // ==================== 5. SCROLL REVEAL OBSERVER ====================
